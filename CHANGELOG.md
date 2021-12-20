@@ -1,19 +1,20 @@
 # Orchestrate Release Notes
 
-## v21.1.12 (2021-11-29)
+## v21.1.13 (2021-12-20)
+### 🛠 Bug fixes
+* Fix sequence of primary key when a DB copy is performed using the `copy-db` command.
 
+## v21.1.12 (2021-11-29)
 ### 🛠 Bug fixes
 * Migrations fail when key-manager is disabled
 * Key Manager fails with incorrect error code when key-manager is disabled
 
 ## v21.1.11 (2021-11-23)
-
 ### 🛠 Bug fixes
 * Tx-sender exits updating jobs already in final status
 * Tx-sender does not send message on `tx-recover` topic when there are persistent connectivity issues with RPC nodes
 
 ## v21.1.10 (2021-10-28)
-
 ### 🛠 Bug fixes
 * Transaction `priority` is applied as expected
 * Sender is not funded in raw transactions
@@ -30,7 +31,6 @@
 * Missing decoded logs in kafka receipts for private contract events
 
 ## v21.1.7 (2021-07-06)
-
 ### 🛠 Bug fixes
 * Database overload querying for registered chains
 
@@ -64,7 +64,6 @@
 * Prevent unnecessary HTTP retries on internal API calls
 
 ## v21.1.1 (2021-02-19)
-
 ### 🛠 Bug fixes
 * Hanging issue during synchronization from block 0 
 * Tx-listener crashes on heavy load over API
@@ -75,7 +74,6 @@
 * Rename deprecated naming from application metrics `orchestrate_transaction_scheduler_*` to `orchestrate_api_*`
 
 ## v21.1.0 (2021-01-25)
-
 ### 🆕 Features
 
 #### Orchestrate simplification
