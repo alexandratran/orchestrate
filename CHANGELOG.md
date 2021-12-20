@@ -1,8 +1,12 @@
 # Orchestrate Release Notes
 
-## v21.1.13 (2021-12-20)
+## v21.1.14 (2021-12-20)
 ### 🛠 Bug fixes
-* Fix sequence of primary key when a DB copy is performed using the `copy-db` command.
+* Fix sequence of primary key when a DB copy is performed using the `copy-db` command
+
+## v21.1.13 (2021-12-5)
+### 🛠 Bug fixes
+* Commits the current offset to the Kafka broker every time a message is processed
 
 ## v21.1.12 (2021-11-29)
 ### 🛠 Bug fixes
