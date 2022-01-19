@@ -11,7 +11,7 @@ require (
 	github.com/cenkalti/backoff/v4 v4.1.1
 	github.com/consensys/quorum v2.7.0+incompatible
 	github.com/consensys/quorum-key-manager v0.0.0-20211216092116-3e1719d4b69d
-	github.com/cucumber/godog v0.11.0
+	github.com/cucumber/godog v0.12.4
 	github.com/cucumber/messages-go/v10 v10.0.3
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/docker/docker v20.10.7+incompatible
