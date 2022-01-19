@@ -21,7 +21,7 @@ require (
 	github.com/ethereum/go-ethereum v1.10.8
 	github.com/go-kit/kit v0.10.1-0.20200915143503-439c4d2ed3ea
 	github.com/go-pg/migrations/v7 v7.1.9
-	github.com/go-pg/pg/v9 v9.1.5
+	github.com/go-pg/pg/v9 v9.2.1
 	github.com/go-playground/validator/v10 v10.10.0
 	github.com/gofrs/uuid v4.0.0+incompatible
 	github.com/golang/mock v1.6.0
