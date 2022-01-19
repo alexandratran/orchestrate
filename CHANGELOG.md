@@ -1,5 +1,9 @@
 # Orchestrate Release Notes
 
+## v21.1.15 (2022-01-19)
+### 🛠 Bug fixes
+* Fixed Chain Proxy issues caused by additional header being added to forwarded request.  
+
 ## v21.1.14 (2021-12-20)
 ### 🛠 Bug fixes
 * Fix sequence of primary key when a DB copy is performed using the `copy-db` command
