@@ -49,7 +49,7 @@ func (uc *callOffTxUseCase) Execute(ctx context.Context, scheduleUUID string, us
 		return nil, errors.FeatureNotSupportedError(errMsg).ExtendComponent(sendTxComponent)
 	}
 
-	job := tx.Schedule.Jobs[0]
+	job := tx.Schedule.Jobs[len(tx.Schedule.Jobs)-1]
 	err = uc.retryJobTxUC.Execute(ctx, job.UUID, 0.1, nil, userInfo)
 	if err != nil {
 		return nil, errors.FromError(err).ExtendComponent(sendTxComponent)

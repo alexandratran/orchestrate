@@ -50,7 +50,7 @@ func (uc *speedUpTxUseCase) Execute(ctx context.Context, scheduleUUID string, ga
 		return nil, errors.FeatureNotSupportedError(errMsg).ExtendComponent(sendTxComponent)
 	}
 
-	job := tx.Schedule.Jobs[0]
+	job := tx.Schedule.Jobs[len(tx.Schedule.Jobs)-1]
 	err = uc.retryJobTxUC.Execute(ctx, job.UUID, gasIncrement, job.Transaction.Data, userInfo)
 	if err != nil {
 		return nil, errors.FromError(err).ExtendComponent(sendTxComponent)
