@@ -12,6 +12,8 @@ type transactionUseCases struct {
 	sendTransaction         usecases.SendTxUseCase
 	getTransaction          usecases.GetTxUseCase
 	searchTransactions      usecases.SearchTransactionsUseCase
+	speedUpTransactions     usecases.SpeedUpTxUseCase
+	callOffTransactions     usecases.CallOffTxUseCase
 }
 
 func newTransactionUseCases(
@@ -31,6 +33,8 @@ func newTransactionUseCases(
 		sendTransaction:         sendTxUC,
 		getTransaction:          getTransactionUC,
 		searchTransactions:      transactions.NewSearchTransactionsUseCase(db, getTransactionUC),
+		speedUpTransactions:     transactions.NewSpeedUpTxUseCase(db, getTransactionUC),
+		callOffTransactions:     transactions.NewCallOffTxUseCase(db, getTransactionUC),
 	}
 }
 
@@ -52,4 +56,12 @@ func (u *transactionUseCases) GetTransaction() usecases.GetTxUseCase {
 
 func (u *transactionUseCases) SearchTransactions() usecases.SearchTransactionsUseCase {
 	return u.searchTransactions
+}
+
+func (u *transactionUseCases) SpeedUpTransaction() usecases.SpeedUpTxUseCase {
+	return u.speedUpTransactions
+}
+
+func (u *transactionUseCases) CallOffTransaction() usecases.CallOffTxUseCase {
+	return u.callOffTransactions
 }

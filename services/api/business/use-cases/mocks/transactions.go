@@ -107,6 +107,34 @@ func (mr *MockTransactionUseCasesMockRecorder) SearchTransactions() *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SearchTransactions", reflect.TypeOf((*MockTransactionUseCases)(nil).SearchTransactions))
 }
 
+// SpeedUpTransaction mocks base method
+func (m *MockTransactionUseCases) SpeedUpTransaction() usecases.SpeedUpTxUseCase {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SpeedUpTransaction")
+	ret0, _ := ret[0].(usecases.SpeedUpTxUseCase)
+	return ret0
+}
+
+// SpeedUpTransaction indicates an expected call of SpeedUpTransaction
+func (mr *MockTransactionUseCasesMockRecorder) SpeedUpTransaction() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SpeedUpTransaction", reflect.TypeOf((*MockTransactionUseCases)(nil).SpeedUpTransaction))
+}
+
+// CallOffTransaction mocks base method
+func (m *MockTransactionUseCases) CallOffTransaction() usecases.CallOffTxUseCase {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CallOffTransaction")
+	ret0, _ := ret[0].(usecases.CallOffTxUseCase)
+	return ret0
+}
+
+// CallOffTransaction indicates an expected call of CallOffTransaction
+func (mr *MockTransactionUseCasesMockRecorder) CallOffTransaction() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CallOffTransaction", reflect.TypeOf((*MockTransactionUseCases)(nil).CallOffTransaction))
+}
+
 // MockGetTxUseCase is a mock of GetTxUseCase interface
 type MockGetTxUseCase struct {
 	ctrl     *gomock.Controller
@@ -295,4 +323,80 @@ func (m *MockSendTxUseCase) Execute(ctx context.Context, txRequest *entities.TxR
 func (mr *MockSendTxUseCaseMockRecorder) Execute(ctx, txRequest, txData, userInfo interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Execute", reflect.TypeOf((*MockSendTxUseCase)(nil).Execute), ctx, txRequest, txData, userInfo)
+}
+
+// MockSpeedUpTxUseCase is a mock of SpeedUpTxUseCase interface
+type MockSpeedUpTxUseCase struct {
+	ctrl     *gomock.Controller
+	recorder *MockSpeedUpTxUseCaseMockRecorder
+}
+
+// MockSpeedUpTxUseCaseMockRecorder is the mock recorder for MockSpeedUpTxUseCase
+type MockSpeedUpTxUseCaseMockRecorder struct {
+	mock *MockSpeedUpTxUseCase
+}
+
+// NewMockSpeedUpTxUseCase creates a new mock instance
+func NewMockSpeedUpTxUseCase(ctrl *gomock.Controller) *MockSpeedUpTxUseCase {
+	mock := &MockSpeedUpTxUseCase{ctrl: ctrl}
+	mock.recorder = &MockSpeedUpTxUseCaseMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use
+func (m *MockSpeedUpTxUseCase) EXPECT() *MockSpeedUpTxUseCaseMockRecorder {
+	return m.recorder
+}
+
+// Execute mocks base method
+func (m *MockSpeedUpTxUseCase) Execute(ctx context.Context, scheduleUUID string, gasIncrement float64, userInfo *multitenancy.UserInfo) (*entities.TxRequest, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Execute", ctx, scheduleUUID, gasIncrement, userInfo)
+	ret0, _ := ret[0].(*entities.TxRequest)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Execute indicates an expected call of Execute
+func (mr *MockSpeedUpTxUseCaseMockRecorder) Execute(ctx, scheduleUUID, gasIncrement, userInfo interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Execute", reflect.TypeOf((*MockSpeedUpTxUseCase)(nil).Execute), ctx, scheduleUUID, gasIncrement, userInfo)
+}
+
+// MockCallOffTxUseCase is a mock of CallOffTxUseCase interface
+type MockCallOffTxUseCase struct {
+	ctrl     *gomock.Controller
+	recorder *MockCallOffTxUseCaseMockRecorder
+}
+
+// MockCallOffTxUseCaseMockRecorder is the mock recorder for MockCallOffTxUseCase
+type MockCallOffTxUseCaseMockRecorder struct {
+	mock *MockCallOffTxUseCase
+}
+
+// NewMockCallOffTxUseCase creates a new mock instance
+func NewMockCallOffTxUseCase(ctrl *gomock.Controller) *MockCallOffTxUseCase {
+	mock := &MockCallOffTxUseCase{ctrl: ctrl}
+	mock.recorder = &MockCallOffTxUseCaseMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use
+func (m *MockCallOffTxUseCase) EXPECT() *MockCallOffTxUseCaseMockRecorder {
+	return m.recorder
+}
+
+// Execute mocks base method
+func (m *MockCallOffTxUseCase) Execute(ctx context.Context, scheduleUUID string, userInfo *multitenancy.UserInfo) (*entities.TxRequest, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Execute", ctx, scheduleUUID, userInfo)
+	ret0, _ := ret[0].(*entities.TxRequest)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Execute indicates an expected call of Execute
+func (mr *MockCallOffTxUseCaseMockRecorder) Execute(ctx, scheduleUUID, userInfo interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Execute", reflect.TypeOf((*MockCallOffTxUseCase)(nil).Execute), ctx, scheduleUUID, userInfo)
 }
