@@ -46,9 +46,9 @@ func (c *TransactionsController) Append(router *mux.Router) {
 	router.Methods(http.MethodGet).Path("/transactions/{uuid}").
 		Handler(http.HandlerFunc(c.getOne))
 	router.Methods(http.MethodPut).Path("/transactions/{uuid}/speed-up").
-		Handler(http.HandlerFunc(c.getOne))
+		Handler(http.HandlerFunc(c.speedUp))
 	router.Methods(http.MethodPut).Path("/transactions/{uuid}/call-off").
-		Handler(http.HandlerFunc(c.getOne))
+		Handler(http.HandlerFunc(c.callOff))
 	router.Methods(http.MethodGet).Path("/transactions").
 		Handler(http.HandlerFunc(c.search))
 }
