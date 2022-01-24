@@ -5,6 +5,7 @@ package controllers
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -14,7 +15,6 @@ import (
 	"github.com/consensys/orchestrate/pkg/types/entities"
 	"github.com/consensys/orchestrate/services/api/business/use-cases"
 
-	"encoding/json"
 	"github.com/consensys/orchestrate/pkg/errors"
 	"github.com/consensys/orchestrate/pkg/toolkit/app/multitenancy"
 	txschedulertypes "github.com/consensys/orchestrate/pkg/types/api"
@@ -36,6 +36,8 @@ type transactionsControllerTestSuite struct {
 	sendTxUseCase         *mocks.MockSendTxUseCase
 	getTxUseCase          *mocks.MockGetTxUseCase
 	searchTxsUsecase      *mocks.MockSearchTransactionsUseCase
+	speedUpTxUseCase      *mocks.MockSpeedUpTxUseCase
+	callOffTxUseCase      *mocks.MockCallOffTxUseCase
 	ctx                   context.Context
 	userInfo              *multitenancy.UserInfo
 	defaultRetryInterval  time.Duration
@@ -59,6 +61,14 @@ func (s *transactionsControllerTestSuite) GetTransaction() usecases.GetTxUseCase
 
 func (s *transactionsControllerTestSuite) SearchTransactions() usecases.SearchTransactionsUseCase {
 	return s.searchTxsUsecase
+}
+
+func (s *transactionsControllerTestSuite) SpeedUpTransaction() usecases.SpeedUpTxUseCase {
+	return s.speedUpTxUseCase
+}
+
+func (s *transactionsControllerTestSuite) CallOffTransaction() usecases.CallOffTxUseCase {
+	return s.callOffTxUseCase
 }
 
 var _ usecases.TransactionUseCases = &transactionsControllerTestSuite{}
