@@ -49,6 +49,7 @@ func TestRetryJobTx_Execute(t *testing.T) {
 		createJobUC.EXPECT().Execute(gomock.Any(), gomock.Any(), userInfo).DoAndReturn(func(ctx context.Context, nextJob *entities.Job, ui *multitenancy.UserInfo) (*entities.Job, error) {
 			assert.Equal(t, job.UUID, nextJob.InternalData.ParentJobUUID)
 			assert.Equal(t, "0x28fa6ae00", nextJob.Transaction.GasTipCap.String())
+			assert.Empty(t, nextJob.Transaction.GasFeeCap)
 			nextJob.UUID = nextJobUUID
 			return nextJob, nil
 		})

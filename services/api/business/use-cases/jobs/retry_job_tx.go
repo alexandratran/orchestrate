@@ -53,6 +53,7 @@ func (uc *retryJobTxUseCase) Execute(ctx context.Context, jobUUID string, gasInc
 		return errors.InvalidStateError(errMessage).ExtendComponent(retryJobTxComponent)
 	}
 
+	job.UUID = ""
 	job.InternalData.ParentJobUUID = jobUUID
 	job.Transaction.Data = txData
 	increment := int64(math.Trunc((gasIncrement + 1.0) * 100))
@@ -64,6 +65,7 @@ func (uc *retryJobTxUseCase) Execute(ctx context.Context, jobUUID string, gasInc
 		gasTipCap := job.Transaction.GasTipCap.ToInt()
 		txGasTipCap := gasTipCap.Mul(gasTipCap, big.NewInt(increment)).Div(gasTipCap, big.NewInt(100))
 		job.Transaction.GasTipCap = utils.ToPtr(hexutil.Big(*txGasTipCap)).(*hexutil.Big)
+		job.Transaction.GasFeeCap = nil // Reset value to recalculate
 	}
 
 	retriedJob, err := uc.createJobTxUC.Execute(ctx, job, userInfo)

@@ -48,6 +48,12 @@ func (uc *speedUpTxUseCase) Execute(ctx context.Context, scheduleUUID string, ga
 		return nil, errors.InvalidParameterError(errMsg).ExtendComponent(sendTxComponent)
 	}
 
+	if tx.InternalData != nil && tx.InternalData.OneTimeKey {
+		errMsg := "speed up is not supported for oneTimeKey transactions"
+		logger.Error(errMsg)
+		return nil, errors.InvalidParameterError(errMsg).ExtendComponent(sendTxComponent)
+	}
+
 	job := tx.Schedule.Jobs[len(tx.Schedule.Jobs)-1]
 	err = uc.retryJobTxUC.Execute(ctx, job.UUID, gasIncrement, job.Transaction.Data, userInfo)
 	if err != nil {

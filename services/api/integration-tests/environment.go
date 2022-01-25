@@ -105,7 +105,7 @@ func NewIntegrationEnvironment(ctx context.Context) (*IntegrationEnvironment, er
 		"--kafka-url=" + kafkaExternalHostname,
 		"--key-manager-url=" + quorumKeyManagerURL,
 		"--key-manager-store-name=" + qkmDefaultStoreID,
-		"--log-level=panic",
+		"--log-level=error",
 	}
 
 	err := flgs.Parse(args)

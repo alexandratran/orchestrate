@@ -399,7 +399,7 @@ func (s *transactionsControllerTestSuite) TestGetOne() {
 func (s *transactionsControllerTestSuite) TestSpeedUp() {
 	uuid := "uuid"
 	increment := 0.3
-	urlPath := fmt.Sprintf("/transactions/%s/speed-up?increment=%f", uuid, increment)
+	urlPath := fmt.Sprintf("/transactions/%s/speed-up?boost=%f", uuid, increment)
 	txRequest := testutils.FakeTxRequest()
 
 	s.T().Run("should execute request successfully", func(t *testing.T) {

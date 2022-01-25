@@ -48,6 +48,12 @@ func (uc *callOffTxUseCase) Execute(ctx context.Context, scheduleUUID string, us
 		return nil, errors.InvalidParameterError(errMsg).ExtendComponent(sendTxComponent)
 	}
 
+	if tx.InternalData != nil && tx.InternalData.OneTimeKey {
+		errMsg := "call off is not supported for oneTimeKey transactions"
+		logger.Error(errMsg)
+		return nil, errors.InvalidParameterError(errMsg).ExtendComponent(sendTxComponent)
+	}
+
 	job := tx.Schedule.Jobs[len(tx.Schedule.Jobs)-1]
 	err = uc.retryJobTxUC.Execute(ctx, job.UUID, 0.1, nil, userInfo)
 	if err != nil {

@@ -54,6 +54,16 @@ func TestCallOffTx_Execute(t *testing.T) {
 		assert.True(t, errors.IsInvalidParameterError(err))
 	})
 	
+	t.Run("should fail to if it is a oneTimeKey transaction", func(t *testing.T) {
+		txRequest := testutils.FakeTxRequest()
+		txRequest.InternalData.OneTimeKey = true
+		
+		getTxUC.EXPECT().Execute(gomock.Any(), txRequest.Schedule.UUID, userInfo).Return(txRequest, nil)
+		_, err := usecase.Execute(ctx, txRequest.Schedule.UUID, userInfo)
+		assert.Error(t, err)
+		assert.True(t, errors.IsInvalidParameterError(err))
+	})
+	
 	t.Run("should fail to execute if getTxUC fails", func(t *testing.T) {
 		expectedErr := fmt.Errorf("err")
 		txRequest := testutils.FakeTxRequest()

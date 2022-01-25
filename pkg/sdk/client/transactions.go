@@ -112,12 +112,12 @@ func (c *HTTPClient) SendCallOffTransaction(ctx context.Context, txRequestUUID s
 	return resp, err
 }
 
-func (c *HTTPClient) SendSpeedUpTransaction(ctx context.Context, txRequestUUID string, increment *float64) (*types.TransactionResponse, error) {
+func (c *HTTPClient) SendSpeedUpTransaction(ctx context.Context, txRequestUUID string, boost *float64) (*types.TransactionResponse, error) {
 	reqURL := fmt.Sprintf("%v/transactions/%v/speed-up", c.config.URL, txRequestUUID)
-	if increment != nil {
-		reqURL = reqURL + fmt.Sprintf("?increment=%f", *increment) 
+	if boost != nil {
+		reqURL += fmt.Sprintf("?boost=%f", *boost)
 	}
-	
+
 	resp := &types.TransactionResponse{}
 
 	err := callWithBackOff(ctx, c.config.backOff, func() error {

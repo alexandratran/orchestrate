@@ -115,6 +115,36 @@ func (mr *MockOrchestrateClientMockRecorder) GetTxRequest(ctx, txRequestUUID int
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTxRequest", reflect.TypeOf((*MockOrchestrateClient)(nil).GetTxRequest), ctx, txRequestUUID)
 }
 
+// SendCallOffTransaction mocks base method
+func (m *MockOrchestrateClient) SendCallOffTransaction(ctx context.Context, txRequestUUID string) (*api.TransactionResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendCallOffTransaction", ctx, txRequestUUID)
+	ret0, _ := ret[0].(*api.TransactionResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SendCallOffTransaction indicates an expected call of SendCallOffTransaction
+func (mr *MockOrchestrateClientMockRecorder) SendCallOffTransaction(ctx, txRequestUUID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendCallOffTransaction", reflect.TypeOf((*MockOrchestrateClient)(nil).SendCallOffTransaction), ctx, txRequestUUID)
+}
+
+// SendSpeedUpTransaction mocks base method
+func (m *MockOrchestrateClient) SendSpeedUpTransaction(ctx context.Context, txRequestUUID string, increment *float64) (*api.TransactionResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendSpeedUpTransaction", ctx, txRequestUUID, increment)
+	ret0, _ := ret[0].(*api.TransactionResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SendSpeedUpTransaction indicates an expected call of SendSpeedUpTransaction
+func (mr *MockOrchestrateClientMockRecorder) SendSpeedUpTransaction(ctx, txRequestUUID, increment interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendSpeedUpTransaction", reflect.TypeOf((*MockOrchestrateClient)(nil).SendSpeedUpTransaction), ctx, txRequestUUID, increment)
+}
+
 // GetSchedule mocks base method
 func (m *MockOrchestrateClient) GetSchedule(ctx context.Context, scheduleUUID string) (*api.ScheduleResponse, error) {
 	m.ctrl.T.Helper()
@@ -787,6 +817,36 @@ func (m *MockTransactionClient) GetTxRequest(ctx context.Context, txRequestUUID 
 func (mr *MockTransactionClientMockRecorder) GetTxRequest(ctx, txRequestUUID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTxRequest", reflect.TypeOf((*MockTransactionClient)(nil).GetTxRequest), ctx, txRequestUUID)
+}
+
+// SendCallOffTransaction mocks base method
+func (m *MockTransactionClient) SendCallOffTransaction(ctx context.Context, txRequestUUID string) (*api.TransactionResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendCallOffTransaction", ctx, txRequestUUID)
+	ret0, _ := ret[0].(*api.TransactionResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SendCallOffTransaction indicates an expected call of SendCallOffTransaction
+func (mr *MockTransactionClientMockRecorder) SendCallOffTransaction(ctx, txRequestUUID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendCallOffTransaction", reflect.TypeOf((*MockTransactionClient)(nil).SendCallOffTransaction), ctx, txRequestUUID)
+}
+
+// SendSpeedUpTransaction mocks base method
+func (m *MockTransactionClient) SendSpeedUpTransaction(ctx context.Context, txRequestUUID string, increment *float64) (*api.TransactionResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendSpeedUpTransaction", ctx, txRequestUUID, increment)
+	ret0, _ := ret[0].(*api.TransactionResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SendSpeedUpTransaction indicates an expected call of SendSpeedUpTransaction
+func (mr *MockTransactionClientMockRecorder) SendSpeedUpTransaction(ctx, txRequestUUID, increment interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendSpeedUpTransaction", reflect.TypeOf((*MockTransactionClient)(nil).SendSpeedUpTransaction), ctx, txRequestUUID, increment)
 }
 
 // MockScheduleClient is a mock of ScheduleClient interface

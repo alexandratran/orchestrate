@@ -283,27 +283,27 @@ func (c *TransactionsController) search(rw http.ResponseWriter, request *http.Re
 // @Security     ApiKeyAuth
 // @Security     JWTAuth
 // @Param        uuid       path      string                  true   "UUID of the transaction request"
-// @Param        increment  query     float64                 false  "gas price increment percentage, default value is 0.05 (5%)"
+// @Param        boost  query     float64                 false  "gas price increment percentage, default value is 0.05 (5%)"
 // @Failure      404        {object}  httputil.ErrorResponse  "Transaction request not found"
 // @Failure      500        {object}  httputil.ErrorResponse  "Internal server error"
 // @Router       /transactions/{uuid}/speed-up [put]
 func (c *TransactionsController) speedUp(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := req.Context()
-	var increment = 0.05 // Default
+	var boostValue = 0.05 // Default
 	var err error
 
 	uuid := mux.Vars(req)["uuid"]
-	incrementInput := req.URL.Query().Get("increment")
-	if incrementInput != "" {
-		increment, err = strconv.ParseFloat(incrementInput, 64)
+	boostInput := req.URL.Query().Get("boost")
+	if boostInput != "" {
+		boostValue, err = strconv.ParseFloat(boostInput, 64)
 		if err != nil {
-			httputil.WriteHTTPErrorResponse(rw, errors.InvalidParameterError("expected float as increment"))
+			httputil.WriteHTTPErrorResponse(rw, errors.InvalidParameterError("expected float as incrementing value"))
 			return
 		}
 	}
 
-	txRequest, err := c.ucs.SpeedUpTransaction().Execute(ctx, uuid, increment, multitenancy.UserInfoValue(ctx))
+	txRequest, err := c.ucs.SpeedUpTransaction().Execute(ctx, uuid, boostValue, multitenancy.UserInfoValue(ctx))
 	if err != nil {
 		httputil.WriteHTTPErrorResponse(rw, err)
 		return
