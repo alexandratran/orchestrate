@@ -38,7 +38,7 @@ func NewRetryJobTxUseCase(db store.DB, createJobTxUC usecases.CreateJobUseCase, 
 func (uc *retryJobTxUseCase) Execute(ctx context.Context, jobUUID string, gasIncrement float64, txData hexutil.Bytes, userInfo *multitenancy.UserInfo) error {
 	ctx = log.WithFields(ctx, log.Field("job", jobUUID))
 	logger := uc.logger.WithContext(ctx)
-	logger.Debug("resending job transaction")
+	logger.Debug("retrying job transaction")
 
 	jobModel, err := uc.db.Job().FindOneByUUID(ctx, jobUUID, userInfo.AllowedTenants, userInfo.Username, false)
 	if err != nil {
@@ -55,20 +55,10 @@ func (uc *retryJobTxUseCase) Execute(ctx context.Context, jobUUID string, gasInc
 	job.InternalData.ParentJobUUID = jobUUID
 	job.Transaction.Data = txData
 	if job.Transaction.TransactionType == entities.LegacyTxType {
-		if job.Transaction.GasPrice == nil {
-			errMsg := "transaction has no gas price set"
-			logger.Error(errMsg)
-			return errors.InvalidParameterError(errMsg).ExtendComponent(retryJobTxComponent)
-		}
 		gasPrice := job.Transaction.GasPrice.ToInt()
 		txGasPrice := gasPrice.Mul(gasPrice, big.NewInt(10)).Div(gasPrice, big.NewInt(100))
 		job.Transaction.GasPrice = utils.ToPtr(hexutil.Big(*txGasPrice)).(*hexutil.Big)
 	} else {
-		if job.Transaction.GasTipCap == nil {
-			errMsg := "transaction has no gas tip cap set"
-			logger.Error(errMsg)
-			return errors.InvalidParameterError(errMsg).ExtendComponent(retryJobTxComponent)
-		}
 		gasTipCap := job.Transaction.GasTipCap.ToInt()
 		txGasTipCap := gasTipCap.Mul(gasTipCap, big.NewInt(10)).Div(gasTipCap, big.NewInt(100))
 		job.Transaction.GasTipCap = utils.ToPtr(hexutil.Big(*txGasTipCap)).(*hexutil.Big)
@@ -83,6 +73,6 @@ func (uc *retryJobTxUseCase) Execute(ctx context.Context, jobUUID string, gasInc
 		return errors.FromError(err).ExtendComponent(retryJobTxComponent)
 	}
 
-	logger.WithField("job", retriedJob.UUID).Info("job was retried successfully")
+	logger.WithField("job", retriedJob.UUID).Info("job retried successfully")
 	return nil
 }

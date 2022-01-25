@@ -38,15 +38,15 @@ func (c *ContractsController) Append(router *mux.Router) {
 	router.Methods(http.MethodGet).Path("/contracts/{name}/{tag}").HandlerFunc(c.getContract)
 }
 
-// @Summary Returns a list of all registered contracts
-// @Description Returns a list of all registered contracts
-// @Tags Contracts
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Success 200 {array} string "Registered contract List"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /contracts [get]
+// @Summary      Returns a list of all registered contracts
+// @Description  Returns a list of all registered contracts
+// @Tags         Contracts
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Success      200  {array}   string                  "Registered contract List"
+// @Failure      500  {object}  httputil.ErrorResponse  "Internal server error"
+// @Router       /contracts [get]
 func (c *ContractsController) getCatalog(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -64,19 +64,19 @@ func (c *ContractsController) getCatalog(rw http.ResponseWriter, request *http.R
 	_ = json.NewEncoder(rw).Encode(names)
 }
 
-// @Summary Register new solidity contract
-// @Description Register new solidity contract in Orchestrate
-// @Tags Contracts
-// @Accept json
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param request body api.RegisterContractRequest true "Contract register request"
-// @Success 200 {object} api.ContractResponse{constructor=entities.ABIComponent,methods=[]entities.ABIComponent,events=[]entities.ABIComponent} "Contract object"
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 401 {object} httputil.ErrorResponse "Unauthorized"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /contracts [post]
+// @Summary      Register new solidity contract
+// @Description  Register new solidity contract in Orchestrate
+// @Tags         Contracts
+// @Accept       json
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        request  body      api.RegisterContractRequest                                                                                             true  "Contract register request"
+// @Success      200      {object}  api.ContractResponse{constructor=entities.ABIComponent,methods=[]entities.ABIComponent,events=[]entities.ABIComponent}  "Contract object"
+// @Failure      400      {object}  httputil.ErrorResponse                                                                                                  "Invalid request"
+// @Failure      401      {object}  httputil.ErrorResponse                                                                                                  "Unauthorized"
+// @Failure      500      {object}  httputil.ErrorResponse                                                                                                  "Internal server error"
+// @Router       /contracts [post]
 func (c *ContractsController) register(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -109,20 +109,20 @@ func (c *ContractsController) register(rw http.ResponseWriter, request *http.Req
 	_ = json.NewEncoder(rw).Encode(formatters.FormatContractResponse(contract))
 }
 
-// @Summary Search contract
-// @Description Search contract by codeHash or signHash
-// @Tags Contracts
-// @Accept json
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param code_hash query string true "contract code hash"
-// @Param address query string true "contract address"
-// @Success 200 {object} api.ContractResponse{} "Contract object"
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 401 {object} httputil.ErrorResponse "Unauthorized"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /contracts/search [get]
+// @Summary      Search contract
+// @Description  Search contract by codeHash or signHash
+// @Tags         Contracts
+// @Accept       json
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        code_hash  query     string                  true  "contract code hash"
+// @Param        address    query     string                  true  "contract address"
+// @Success      200        {object}  api.ContractResponse{}  "Contract object"
+// @Failure      400        {object}  httputil.ErrorResponse  "Invalid request"
+// @Failure      401        {object}  httputil.ErrorResponse  "Unauthorized"
+// @Failure      500        {object}  httputil.ErrorResponse  "Internal server error"
+// @Router       /contracts/search [get]
 func (c *ContractsController) search(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -142,19 +142,19 @@ func (c *ContractsController) search(rw http.ResponseWriter, request *http.Reque
 	_ = json.NewEncoder(rw).Encode(formatters.FormatContractResponse(contract))
 }
 
-// @Summary Set the codeHash of the given contract address
-// @Description Retrieve events using hash of signature
-// @Tags Contracts
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param request body api.SetContractCodeHashRequest true "Contract code hash request"
-// @Param address path string true "contract deployed address"
-// @Param chain_id path string true "network chain id"
-// @Success 200 {array} string "List of events"
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /contracts/accounts/{chain_id}/{address} [post]
+// @Summary      Set the codeHash of the given contract address
+// @Description  Retrieve events using hash of signature
+// @Tags         Contracts
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        request   body      api.SetContractCodeHashRequest  true  "Contract code hash request"
+// @Param        address   path      string                          true  "contract deployed address"
+// @Param        chain_id  path      string                          true  "network chain id"
+// @Success      200       {array}   string                          "List of events"
+// @Failure      400       {object}  httputil.ErrorResponse          "Invalid request"
+// @Failure      500       {object}  httputil.ErrorResponse          "Internal server error"
+// @Router       /contracts/accounts/{chain_id}/{address} [post]
 func (c *ContractsController) setCodeHash(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -183,20 +183,20 @@ func (c *ContractsController) setCodeHash(rw http.ResponseWriter, request *http.
 	_, _ = rw.Write([]byte("OK"))
 }
 
-// @Summary Retrieve events using hash of signature
-// @Description Retrieve events using hash of signature
-// @Tags Contracts
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param address path string true "contract deployed address"
-// @Param chain_id path string true "network chain id"
-// @Param sign_hash query string true "event sigh hash value"
-// @Success 200 {object} api.GetContractEventsBySignHashResponse{} "List of events"
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 404 {object} httputil.ErrorResponse "Events not found"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /contracts/accounts/{chain_id}/{address}/events [get]
+// @Summary      Retrieve events using hash of signature
+// @Description  Retrieve events using hash of signature
+// @Tags         Contracts
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        address    path      string                                     true  "contract deployed address"
+// @Param        chain_id   path      string                                     true  "network chain id"
+// @Param        sign_hash  query     string                                     true  "event sigh hash value"
+// @Success      200        {object}  api.GetContractEventsBySignHashResponse{}  "List of events"
+// @Failure      400        {object}  httputil.ErrorResponse                     "Invalid request"
+// @Failure      404        {object}  httputil.ErrorResponse                     "Events not found"
+// @Failure      500        {object}  httputil.ErrorResponse                     "Internal server error"
+// @Router       /contracts/accounts/{chain_id}/{address}/events [get]
 func (c *ContractsController) getEvents(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -226,16 +226,16 @@ func (c *ContractsController) getEvents(rw http.ResponseWriter, request *http.Re
 	_ = json.NewEncoder(rw).Encode(api.GetContractEventsBySignHashResponse{Event: abi, DefaultEvents: abiEvents})
 }
 
-// @Summary Returns a list of all tags
-// @Description Returns a list of all tags from given contract name
-// @Tags Contracts
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Success 200 {array} string "List of tags"
-// @Failure 404 {object} httputil.ErrorResponse "contract not found"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /contracts/{name} [get]
+// @Summary      Returns a list of all tags
+// @Description  Returns a list of all tags from given contract name
+// @Tags         Contracts
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Success      200  {array}   string                  "List of tags"
+// @Failure      404  {object}  httputil.ErrorResponse  "contract not found"
+// @Failure      500  {object}  httputil.ErrorResponse  "Internal server error"
+// @Router       /contracts/{name} [get]
 func (c *ContractsController) getTags(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -253,18 +253,18 @@ func (c *ContractsController) getTags(rw http.ResponseWriter, request *http.Requ
 	_ = json.NewEncoder(rw).Encode(tags)
 }
 
-// @Summary Fetch registered contract data
-// @Description Fetch solidity contract data by {name} and {tag}
-// @Tags Contracts
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param name path string true "solidity contract registered name"
-// @Param tag path string true "solidity contract registered tag"
-// @Success 200 {object} api.ContractResponse{constructor=entities.ABIComponent,methods=[]entities.ABIComponent,events=[]entities.ABIComponent} "Contract found"
-// @Failure 404 {object} httputil.ErrorResponse "Contract not found"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /contracts/{name}/{tag} [get]
+// @Summary      Fetch registered contract data
+// @Description  Fetch solidity contract data by {name} and {tag}
+// @Tags         Contracts
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        name  path      string                                                                                                                  true  "solidity contract registered name"
+// @Param        tag   path      string                                                                                                                  true  "solidity contract registered tag"
+// @Success      200   {object}  api.ContractResponse{constructor=entities.ABIComponent,methods=[]entities.ABIComponent,events=[]entities.ABIComponent}  "Contract found"
+// @Failure      404   {object}  httputil.ErrorResponse                                                                                                  "Contract not found"
+// @Failure      500   {object}  httputil.ErrorResponse                                                                                                  "Internal server error"
+// @Router       /contracts/{name}/{tag} [get]
 func (c *ContractsController) getContract(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()

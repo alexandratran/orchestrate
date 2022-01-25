@@ -581,7 +581,7 @@ func (e *Envelope) GetGasTipCap() *hexutil.Big {
 	return e.GasTipCap
 }
 
-// @TODO: Remove ***String() func helpers since they might not be needed anymore
+// @TODO:  Remove ***String() func helpers since they might not be needed anymore
 func (e *Envelope) GetGasTipCapString() string {
 	if e.GasTipCap == nil {
 		return ""
@@ -1158,8 +1158,8 @@ func (e *Envelope) loadPtrFields(gas, nonce, gasPrice, gasFeeCap, gasTipCap, val
 
 // Attribute kafka partition and redis keys to well attribute nonce
 // For a classic eth_sendRawTransaction transaction - <from>@<chainID>
-// For a eea_sendRawTransaction with a privacyGroupID - <from>@eea-<privacyGroupID>@<chainID>
-// For a eea_sendRawTransaction with a privateFor - <from>@eea-<hash(privateFor-privateFrom)>@<chainID>
+// For  a eea_sendRawTransaction with a privacyGroupID - <from>@eea-<privacyGroupID>@<chainID>
+// For  a eea_sendRawTransaction with a privateFor - <from>@eea-<hash(privateFor-privateFrom)>@<chainID>
 func (e *Envelope) PartitionKey() string {
 
 	// Return empty partition key for raw tx and one time key tx

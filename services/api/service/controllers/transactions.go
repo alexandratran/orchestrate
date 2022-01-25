@@ -53,22 +53,22 @@ func (c *TransactionsController) Append(router *mux.Router) {
 		Handler(http.HandlerFunc(c.search))
 }
 
-// @Summary Creates and sends a new contract transaction
-// @Description Creates and executes a new smart contract transaction request
-// @Description The transaction can be private (Tessera, EEA).
-// @Description The transaction can be a One Time Key transaction in 0 gas private networks
-// @Tags Transactions
-// @Accept json
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param request body api.SendTransactionRequest{params=api.TransactionParams{gasPricePolicy=api.GasPriceParams{retryPolicy=api.RetryParams}}} true "Contract transaction request"
-// @Success 202 {object} api.TransactionResponse "Created contract transaction request"
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 409 {object} httputil.ErrorResponse "Already existing transaction"
-// @Failure 422 {object} httputil.ErrorResponse "Unprocessable parameters were sent"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /transactions/send [post]
+// @Summary      Creates and sends a new contract transaction
+// @Description  Creates and executes a new smart contract transaction request
+// @Description  The transaction can be private (Tessera, EEA).
+// @Description  The transaction can be a One Time Key transaction in 0 gas private networks
+// @Tags         Transactions
+// @Accept       json
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        request  body      api.SendTransactionRequest{params=api.TransactionParams{gasPricePolicy=api.GasPriceParams{retryPolicy=api.RetryParams}}}  true  "Contract transaction request"
+// @Success      202      {object}  api.TransactionResponse                                                                                                   "Created contract transaction request"
+// @Failure      400      {object}  httputil.ErrorResponse                                                                                                    "Invalid request"
+// @Failure      409      {object}  httputil.ErrorResponse                                                                                                    "Already existing transaction"
+// @Failure      422      {object}  httputil.ErrorResponse                                                                                                    "Unprocessable parameters were sent"
+// @Failure      500      {object}  httputil.ErrorResponse                                                                                                    "Internal server error"
+// @Router       /transactions/send [post]
 func (c *TransactionsController) send(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -95,22 +95,22 @@ func (c *TransactionsController) send(rw http.ResponseWriter, request *http.Requ
 	_ = json.NewEncoder(rw).Encode(formatters.FormatTxResponse(txResponse))
 }
 
-// @Summary Creates and sends a new contract deployment
-// @Description Creates and executes a new contract deployment request
-// @Description The transaction can be private (Tessera, EEA).
-// @Description The transaction can be a One Time Key transaction in 0 gas private networks
-// @Tags Transactions
-// @Accept json
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param request body api.DeployContractRequest{params=api.DeployContractParams{gasPricePolicy=api.GasPriceParams{retryPolicy=api.RetryParams}}} true "Deployment transaction request"
-// @Success 202 {object} api.TransactionResponse "Created deployment transaction request"
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 409 {object} httputil.ErrorResponse "Already existing transaction"
-// @Failure 422 {object} httputil.ErrorResponse "Unprocessable parameters were sent"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /transactions/deploy-contract [post]
+// @Summary      Creates and sends a new contract deployment
+// @Description  Creates and executes a new contract deployment request
+// @Description  The transaction can be private (Tessera, EEA).
+// @Description  The transaction can be a One Time Key transaction in 0 gas private networks
+// @Tags         Transactions
+// @Accept       json
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        request  body      api.DeployContractRequest{params=api.DeployContractParams{gasPricePolicy=api.GasPriceParams{retryPolicy=api.RetryParams}}}  true  "Deployment transaction request"
+// @Success      202      {object}  api.TransactionResponse                                                                                                     "Created deployment transaction request"
+// @Failure      400      {object}  httputil.ErrorResponse                                                                                                      "Invalid request"
+// @Failure      409      {object}  httputil.ErrorResponse                                                                                                      "Already existing transaction"
+// @Failure      422      {object}  httputil.ErrorResponse                                                                                                      "Unprocessable parameters were sent"
+// @Failure      500      {object}  httputil.ErrorResponse                                                                                                      "Internal server error"
+// @Router       /transactions/deploy-contract [post]
 func (c *TransactionsController) deployContract(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -137,20 +137,20 @@ func (c *TransactionsController) deployContract(rw http.ResponseWriter, request 
 	_ = json.NewEncoder(rw).Encode(formatters.FormatTxResponse(txResponse))
 }
 
-// @Summary Creates and sends a raw transaction
-// @Description Creates and executes a new raw transaction request
-// @Tags Transactions
-// @Accept json
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param request body api.RawTransactionRequest{params=api.RawTransactionParams{retryPolicy=api.IntervalRetryParams}} true "Raw transaction request"
-// @Success 202 {object} api.TransactionResponse "Created raw transaction request"
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 409 {object} httputil.ErrorResponse "Already existing transaction"
-// @Failure 422 {object} httputil.ErrorResponse "Unprocessable parameters were sent"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /transactions/send-raw [post]
+// @Summary      Creates and sends a raw transaction
+// @Description  Creates and executes a new raw transaction request
+// @Tags         Transactions
+// @Accept       json
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        request  body      api.RawTransactionRequest{params=api.RawTransactionParams{retryPolicy=api.IntervalRetryParams}}  true  "Raw transaction request"
+// @Success      202      {object}  api.TransactionResponse                                                                          "Created raw transaction request"
+// @Failure      400      {object}  httputil.ErrorResponse                                                                           "Invalid request"
+// @Failure      409      {object}  httputil.ErrorResponse                                                                           "Already existing transaction"
+// @Failure      422      {object}  httputil.ErrorResponse                                                                           "Unprocessable parameters were sent"
+// @Failure      500      {object}  httputil.ErrorResponse                                                                           "Internal server error"
+// @Router       /transactions/send-raw [post]
 func (c *TransactionsController) sendRaw(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -173,20 +173,20 @@ func (c *TransactionsController) sendRaw(rw http.ResponseWriter, request *http.R
 	_ = json.NewEncoder(rw).Encode(formatters.FormatTxResponse(txResponse))
 }
 
-// @Summary Creates and sends a transfer transaction
-// @Description Creates and executes a new transfer request
-// @Tags Transactions
-// @Accept json
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param request body api.TransferRequest{params=api.TransferParams{gasPricePolicy=api.GasPriceParams{retryPolicy=api.RetryParams}}} true "Transfer transaction request"
-// @Success 202 {object} api.TransactionResponse "Created transfer transaction request"
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 409 {object} httputil.ErrorResponse "Already existing transaction"
-// @Failure 422 {object} httputil.ErrorResponse "Unprocessable parameters were sent"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /transactions/transfer [post]
+// @Summary      Creates and sends a transfer transaction
+// @Description  Creates and executes a new transfer request
+// @Tags         Transactions
+// @Accept       json
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        request  body      api.TransferRequest{params=api.TransferParams{gasPricePolicy=api.GasPriceParams{retryPolicy=api.RetryParams}}}  true  "Transfer transaction request"
+// @Success      202      {object}  api.TransactionResponse                                                                                         "Created transfer transaction request"
+// @Failure      400      {object}  httputil.ErrorResponse                                                                                          "Invalid request"
+// @Failure      409      {object}  httputil.ErrorResponse                                                                                          "Already existing transaction"
+// @Failure      422      {object}  httputil.ErrorResponse                                                                                          "Unprocessable parameters were sent"
+// @Failure      500      {object}  httputil.ErrorResponse                                                                                          "Internal server error"
+// @Router       /transactions/transfer [post]
 func (c *TransactionsController) transfer(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -214,17 +214,17 @@ func (c *TransactionsController) transfer(rw http.ResponseWriter, request *http.
 	_ = json.NewEncoder(rw).Encode(formatters.FormatTxResponse(txResponse))
 }
 
-// @Summary Fetch a transaction request by uuid
-// @Description Fetch a single transaction request by uuid
-// @Tags Transactions
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param uuid path string true "UUID of the transaction request"
-// @Success 200 {object} api.TransactionResponse "Transaction request found"
-// @Failure 404 {object} httputil.ErrorResponse "Transaction request not found"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /transactions/{uuid} [get]
+// @Summary      Fetch a transaction request by uuid
+// @Description  Fetch a single transaction request by uuid
+// @Tags         Transactions
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        uuid  path      string                   true  "UUID of the transaction request"
+// @Success      200   {object}  api.TransactionResponse  "Transaction request found"
+// @Failure      404   {object}  httputil.ErrorResponse   "Transaction request not found"
+// @Failure      500   {object}  httputil.ErrorResponse   "Internal server error"
+// @Router       /transactions/{uuid} [get]
 func (c *TransactionsController) getOne(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -240,18 +240,18 @@ func (c *TransactionsController) getOne(rw http.ResponseWriter, request *http.Re
 	_ = json.NewEncoder(rw).Encode(formatters.FormatTxResponse(txRequest))
 }
 
-// @Summary Search transaction requests by provided filters
-// @Description Get a list of filtered transaction requests
-// @Tags Transactions
-// @Accept json
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param idempotency_keys query []string false "List of idempotency keys" collectionFormat(csv)
-// @Success 200 {array} api.TransactionResponse "List of transaction requests found"
-// @Failure 400 {object} httputil.ErrorResponse "Invalid filter in the request"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /transactions [get]
+// @Summary      Search transaction requests by provided filters
+// @Description  Get a list of filtered transaction requests
+// @Tags         Transactions
+// @Accept       json
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        idempotency_keys  query     []string                 false  "List of idempotency keys"  collectionFormat(csv)
+// @Success      200               {array}   api.TransactionResponse  "List of transaction requests found"
+// @Failure      400               {object}  httputil.ErrorResponse   "Invalid filter in the request"
+// @Failure      500               {object}  httputil.ErrorResponse   "Internal server error"
+// @Router       /transactions [get]
 func (c *TransactionsController) search(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -276,17 +276,17 @@ func (c *TransactionsController) search(rw http.ResponseWriter, request *http.Re
 	_ = json.NewEncoder(rw).Encode(response)
 }
 
-// @Summary Speed up transaction timeIncrease transaction gas price
-// @Description Speed up transaction time by an increase its gas price
-// @Tags Transactions
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param uuid path string true "UUID of the transaction request"
-// @Param increment query float false "gas price increment percentage, default value is 0.05 (5%)"
-// @Failure 404 {object} httputil.ErrorResponse "Transaction request not found"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /transactions/{uuid}/speed-up [put]
+// @Summary      Speed up transaction timeIncrease transaction gas price
+// @Description  Speed up transaction time by an increase its gas price
+// @Tags         Transactions
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        uuid       path      string                  true   "UUID of the transaction request"
+// @Param        increment  query     float64                 false  "gas price increment percentage, default value is 0.05 (5%)"
+// @Failure      404        {object}  httputil.ErrorResponse  "Transaction request not found"
+// @Failure      500        {object}  httputil.ErrorResponse  "Internal server error"
+// @Router       /transactions/{uuid}/speed-up [put]
 func (c *TransactionsController) speedUp(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -312,16 +312,16 @@ func (c *TransactionsController) speedUp(rw http.ResponseWriter, request *http.R
 	_ = json.NewEncoder(rw).Encode(formatters.FormatTxResponse(txRequest))
 }
 
-// @Summary Call of transaction
-// @Description Call of transaction  by sending empty data transaction with same nonce and additional 10% more gas
-// @Tags Transactions
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param uuid path string true "UUID of the transaction request"
-// @Failure 404 {object} httputil.ErrorResponse "Transaction request not found"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /transactions/{uuid}/call-off [put]
+// @Summary      Call of transaction
+// @Description  Call of transaction by sending empty data transaction with same nonce and additional 10% more gas
+// @Tags         Transactions
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        uuid  path      string                  true  "UUID of the transaction request"
+// @Failure      404   {object}  httputil.ErrorResponse  "Transaction request not found"
+// @Failure      500   {object}  httputil.ErrorResponse  "Internal server error"
+// @Router       /transactions/{uuid}/call-off [put]
 func (c *TransactionsController) callOff(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()

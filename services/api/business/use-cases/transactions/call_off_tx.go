@@ -13,7 +13,6 @@ import (
 
 const callOffTxComponent = "use-cases.call-off-tx"
 
-// callOffTxUseCase is a use case to get a transaction request
 type callOffTxUseCase struct {
 	db           store.DB
 	getTxUC      usecases.GetTxUseCase
@@ -44,9 +43,9 @@ func (uc *callOffTxUseCase) Execute(ctx context.Context, scheduleUUID string, us
 	}
 
 	if tx.Params.Protocol != "" {
-		errMsg := "cancel transaction is not supported"
+		errMsg := "call off is not supported for private transaction"
 		logger.Error(errMsg)
-		return nil, errors.FeatureNotSupportedError(errMsg).ExtendComponent(sendTxComponent)
+		return nil, errors.InvalidParameterError(errMsg).ExtendComponent(sendTxComponent)
 	}
 
 	job := tx.Schedule.Jobs[len(tx.Schedule.Jobs)-1]

@@ -31,15 +31,15 @@ func (c *FaucetsController) Append(router *mux.Router) {
 	router.Methods(http.MethodDelete).Path("/faucets/{uuid}").HandlerFunc(c.delete)
 }
 
-// @Summary Retrieves a list of all registered faucets
-// @Tags Faucets
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Success 200 {array} api.FaucetResponse
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /faucets [get]
+// @Summary   Retrieves a list of all registered faucets
+// @Tags      Faucets
+// @Produce   json
+// @Security  ApiKeyAuth
+// @Security  JWTAuth
+// @Success   200  {array}   api.FaucetResponse
+// @Failure   400  {object}  httputil.ErrorResponse  "Invalid request"
+// @Failure   500  {object}  httputil.ErrorResponse  "Internal server error"
+// @Router    /faucets [get]
 func (c *FaucetsController) search(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -64,14 +64,14 @@ func (c *FaucetsController) search(rw http.ResponseWriter, request *http.Request
 	_ = json.NewEncoder(rw).Encode(response)
 }
 
-// @Summary Retrieves a faucet by ID
-// @Tags Faucets
-// @Produce json
-// @Param uuid path string true "ID of the faucet"
-// @Success 200 {object} api.FaucetResponse
-// @Failure 404 {object} httputil.ErrorResponse "Faucet not found"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /faucets/{uuid} [get]
+// @Summary  Retrieves a faucet by ID
+// @Tags     Faucets
+// @Produce  json
+// @Param    uuid  path      string  true  "ID of the faucet"
+// @Success  200   {object}  api.FaucetResponse
+// @Failure  404   {object}  httputil.ErrorResponse  "Faucet not found"
+// @Failure  500   {object}  httputil.ErrorResponse  "Internal server error"
+// @Router   /faucets/{uuid} [get]
 func (c *FaucetsController) getOne(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -85,18 +85,18 @@ func (c *FaucetsController) getOne(rw http.ResponseWriter, request *http.Request
 	_ = json.NewEncoder(rw).Encode(formatters.FormatFaucetResponse(faucet))
 }
 
-// @Summary Registers a new faucet
-// @Tags Faucets
-// @Accept json
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param request body api.RegisterFaucetRequest true "Faucet registration request"
-// @Success 200 {object} api.FaucetResponse
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 422 {object} httputil.ErrorResponse "Unprocessable entity"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /faucets [post]
+// @Summary   Registers a new faucet
+// @Tags      Faucets
+// @Accept    json
+// @Produce   json
+// @Security  ApiKeyAuth
+// @Security  JWTAuth
+// @Param     request  body      api.RegisterFaucetRequest  true  "Faucet registration request"
+// @Success   200      {object}  api.FaucetResponse
+// @Failure   400      {object}  httputil.ErrorResponse  "Invalid request"
+// @Failure   422      {object}  httputil.ErrorResponse  "Unprocessable entity"
+// @Failure   500      {object}  httputil.ErrorResponse  "Internal server error"
+// @Router    /faucets [post]
 func (c *FaucetsController) register(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -117,20 +117,20 @@ func (c *FaucetsController) register(rw http.ResponseWriter, request *http.Reque
 	_ = json.NewEncoder(rw).Encode(formatters.FormatFaucetResponse(faucet))
 }
 
-// @Summary Updates a faucet by ID
-// @Tags Faucets
-// @Accept json
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param uuid path string true "ID of the faucet"
-// @Param request body api.UpdateFaucetRequest true "Faucet update request"
-// @Success 200 {object} api.FaucetResponse
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 404 {object} httputil.ErrorResponse "Faucet not found"
-// @Failure 422 {object} httputil.ErrorResponse "Unprocessable entity"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /faucets/{uuid} [patch]
+// @Summary   Updates a faucet by ID
+// @Tags      Faucets
+// @Accept    json
+// @Produce   json
+// @Security  ApiKeyAuth
+// @Security  JWTAuth
+// @Param     uuid     path      string                   true  "ID of the faucet"
+// @Param     request  body      api.UpdateFaucetRequest  true  "Faucet update request"
+// @Success   200      {object}  api.FaucetResponse
+// @Failure   400      {object}  httputil.ErrorResponse  "Invalid request"
+// @Failure   404      {object}  httputil.ErrorResponse  "Faucet not found"
+// @Failure   422      {object}  httputil.ErrorResponse  "Unprocessable entity"
+// @Failure   500      {object}  httputil.ErrorResponse  "Internal server error"
+// @Router    /faucets/{uuid} [patch]
 func (c *FaucetsController) update(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -152,16 +152,16 @@ func (c *FaucetsController) update(rw http.ResponseWriter, request *http.Request
 	_ = json.NewEncoder(rw).Encode(formatters.FormatFaucetResponse(faucet))
 }
 
-// @Summary Deletes a faucet by ID
-// @Tags Faucets
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param uuid path string true "ID of the faucet"
-// @Success 204
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 404 {object} httputil.ErrorResponse "Faucet not found"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /faucets/{uuid} [delete]
+// @Summary   Deletes a faucet by ID
+// @Tags      Faucets
+// @Security  ApiKeyAuth
+// @Security  JWTAuth
+// @Param     uuid  path  string  true  "ID of the faucet"
+// @Success   204
+// @Failure   400  {object}  httputil.ErrorResponse  "Invalid request"
+// @Failure   404  {object}  httputil.ErrorResponse  "Faucet not found"
+// @Failure   500  {object}  httputil.ErrorResponse  "Internal server error"
+// @Router    /faucets/{uuid} [delete]
 func (c *FaucetsController) delete(rw http.ResponseWriter, request *http.Request) {
 	ctx := request.Context()
 

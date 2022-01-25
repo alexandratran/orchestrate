@@ -37,19 +37,19 @@ func (c *JobsController) Append(router *mux.Router) {
 	router.Methods(http.MethodPut).Path("/jobs/{uuid}/resend").HandlerFunc(c.resend)
 }
 
-// @Summary Search jobs by provided filters
-// @Description Get a list of filtered jobs
-// @Tags Jobs
-// @Accept json
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param tx_hashes query []string false "List of transaction hashes" collectionFormat(csv)
-// @Param chain_uuid query string false "Chain UUID"
-// @Success 200 {array} api.JobResponse{annotations=api.Annotations{gasPricePolicy=api.GasPriceParams{retryPolicy=api.RetryParams}},transaction=entities.ETHTransaction,logs=[]entities.Log} "List of Jobs found"
-// @Failure 400 {object} httputil.ErrorResponse "Invalid filter in the request"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /jobs [get]
+// @Summary      Search jobs by provided filters
+// @Description  Get a list of filtered jobs
+// @Tags         Jobs
+// @Accept       json
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        tx_hashes   query     []string                                                                                                                                                              false  "List of transaction hashes"  collectionFormat(csv)
+// @Param        chain_uuid  query     string                                                                                                                                                                false  "Chain UUID"
+// @Success      200         {array}   api.JobResponse{annotations=api.Annotations{gasPricePolicy=api.GasPriceParams{retryPolicy=api.RetryParams}},transaction=entities.ETHTransaction,logs=[]entities.Log}  "List of Jobs found"
+// @Failure      400         {object}  httputil.ErrorResponse                                                                                                                                                "Invalid filter in the request"
+// @Failure      500         {object}  httputil.ErrorResponse                                                                                                                                                "Internal server error"
+// @Router       /jobs [get]
 func (c *JobsController) search(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -74,19 +74,19 @@ func (c *JobsController) search(rw http.ResponseWriter, request *http.Request) {
 	_ = json.NewEncoder(rw).Encode(response)
 }
 
-// @Summary Creates a new Job
-// @Description Creates a new job as part of an already created schedule
-// @Tags Jobs
-// @Accept json
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param request body api.CreateJobRequest{annotations=api.Annotations{gasPricePolicy=api.GasPriceParams{retryPolicy=api.RetryParams}},transaction=entities.ETHTransaction} true "Job creation request"
-// @Success 200 {object} api.JobResponse "Created Job"
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 422 {object} httputil.ErrorResponse "Unprocessable parameters were sent"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /jobs [post]
+// @Summary      Creates a new Job
+// @Description  Creates a new job as part of an already created schedule
+// @Tags         Jobs
+// @Accept       json
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        request  body      api.CreateJobRequest{annotations=api.Annotations{gasPricePolicy=api.GasPriceParams{retryPolicy=api.RetryParams}},transaction=entities.ETHTransaction}  true  "Job creation request"
+// @Success      200      {object}  api.JobResponse                                                                                                                                        "Created Job"
+// @Failure      400      {object}  httputil.ErrorResponse                                                                                                                                 "Invalid request"
+// @Failure      422      {object}  httputil.ErrorResponse                                                                                                                                 "Unprocessable parameters were sent"
+// @Failure      500      {object}  httputil.ErrorResponse                                                                                                                                 "Internal server error"
+// @Router       /jobs [post]
 func (c *JobsController) create(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -113,17 +113,17 @@ func (c *JobsController) create(rw http.ResponseWriter, request *http.Request) {
 	_ = json.NewEncoder(rw).Encode(formatters.FormatJobResponse(jobRes))
 }
 
-// @Summary Fetch a job by uuid
-// @Description Fetch a single job by uuid
-// @Tags Jobs
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param uuid path string true "UUID of the job"
-// @Success 200 {object} api.JobResponse{annotations=api.Annotations{gasPricePolicy=api.GasPriceParams{retryPolicy=api.RetryParams}}} "Job found"
-// @Failure 404 {object} httputil.ErrorResponse "Job not found"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /jobs/{uuid} [get]
+// @Summary      Fetch a job by uuid
+// @Description  Fetch a single job by uuid
+// @Tags         Jobs
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        uuid  path      string                                                                                                        true  "UUID of the job"
+// @Success      200   {object}  api.JobResponse{annotations=api.Annotations{gasPricePolicy=api.GasPriceParams{retryPolicy=api.RetryParams}}}  "Job found"
+// @Failure      404   {object}  httputil.ErrorResponse                                                                                        "Job not found"
+// @Failure      500   {object}  httputil.ErrorResponse                                                                                        "Internal server error"
+// @Router       /jobs/{uuid} [get]
 func (c *JobsController) getOne(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -139,17 +139,17 @@ func (c *JobsController) getOne(rw http.ResponseWriter, request *http.Request) {
 	_ = json.NewEncoder(rw).Encode(formatters.FormatJobResponse(jobRes))
 }
 
-// @Summary Start a Job by UUID
-// @Description Starts a specific job by UUID, effectively executing the transaction asynchronously
-// @Tags Jobs
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param uuid path string true "UUID of the job"
-// @Success 202
-// @Failure 404 {object} httputil.ErrorResponse "Job not found"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /jobs/{uuid}/start [put]
+// @Summary      Start a Job by UUID
+// @Description  Starts a specific job by UUID, effectively executing the transaction asynchronously
+// @Tags         Jobs
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        uuid  path  string  true  "UUID of the job"
+// @Success      202
+// @Failure      404  {object}  httputil.ErrorResponse  "Job not found"
+// @Failure      500  {object}  httputil.ErrorResponse  "Internal server error"
+// @Router       /jobs/{uuid}/start [put]
 func (c *JobsController) start(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -164,17 +164,17 @@ func (c *JobsController) start(rw http.ResponseWriter, request *http.Request) {
 	rw.WriteHeader(http.StatusAccepted)
 }
 
-// @Summary Resend Job transaction by UUID
-// @Description Resend transaction of specific job by UUID, effectively executing the re-sending of transaction asynchronously
-// @Tags Jobs
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param uuid path string true "UUID of the job"
-// @Success 202
-// @Failure 404 {object} httputil.ErrorResponse "Job not found"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /jobs/{uuid}/resend [put]
+// @Summary      Resend Job transaction by UUID
+// @Description  Resend transaction of specific job by UUID, effectively executing the re-sending of transaction asynchronously
+// @Tags         Jobs
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        uuid  path  string  true  "UUID of the job"
+// @Success      202
+// @Failure      404  {object}  httputil.ErrorResponse  "Job not found"
+// @Failure      500  {object}  httputil.ErrorResponse  "Internal server error"
+// @Router       /jobs/{uuid}/resend [put]
 func (c *JobsController) resend(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -189,21 +189,21 @@ func (c *JobsController) resend(rw http.ResponseWriter, request *http.Request) {
 	rw.WriteHeader(http.StatusAccepted)
 }
 
-// @Summary Update job by UUID
-// @Description Update a specific job by UUID
-// @Description WARNING: Reserved for advanced users. Orchestrate does not recommend using this endpoint.
-// @Tags Jobs
-// @Accept json
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param request body api.UpdateJobRequest{annotations=api.Annotations{gasPricePolicy=api.GasPriceParams{retryPolicy=api.RetryParams}},transaction=entities.ETHTransaction} true "Job update request"
-// @Success 200 {object} api.JobResponse "Job found"
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 404 {object} httputil.ErrorResponse "Job not found"
-// @Failure 409 {object} httputil.ErrorResponse "Job in invalid state for the given status update"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /jobs/{uuid} [patch]
+// @Summary      Update job by UUID
+// @Description  Update a specific job by UUID
+// @Description  WARNING: Reserved for advanced users. Orchestrate does not recommend using this endpoint.
+// @Tags         Jobs
+// @Accept       json
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        request  body      api.UpdateJobRequest{annotations=api.Annotations{gasPricePolicy=api.GasPriceParams{retryPolicy=api.RetryParams}},transaction=entities.ETHTransaction}  true  "Job update request"
+// @Success      200      {object}  api.JobResponse                                                                                                                                        "Job found"
+// @Failure      400      {object}  httputil.ErrorResponse                                                                                                                                 "Invalid request"
+// @Failure      404      {object}  httputil.ErrorResponse                                                                                                                                 "Job not found"
+// @Failure      409      {object}  httputil.ErrorResponse                                                                                                                                 "Job in invalid state for the given status update"
+// @Failure      500      {object}  httputil.ErrorResponse                                                                                                                                 "Internal server error"
+// @Router       /jobs/{uuid} [patch]
 func (c *JobsController) update(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()

@@ -13,7 +13,6 @@ import (
 
 const speedUpTxComponent = "use-cases.speed-up-tx"
 
-// speedUpTxUseCase is a use case to get a transaction request
 type speedUpTxUseCase struct {
 	db           store.DB
 	getTxUC      usecases.GetTxUseCase
@@ -30,7 +29,6 @@ func NewSpeedUpTxUseCase(db store.DB, getTxUC usecases.GetTxUseCase, retryJobTxU
 	}
 }
 
-// Execute gets a transaction request
 func (uc *speedUpTxUseCase) Execute(ctx context.Context, scheduleUUID string, gasIncrement float64, userInfo *multitenancy.UserInfo) (*entities.TxRequest, error) {
 	ctx = log.WithFields(
 		ctx,
@@ -45,9 +43,9 @@ func (uc *speedUpTxUseCase) Execute(ctx context.Context, scheduleUUID string, ga
 	}
 
 	if tx.Params.Protocol != "" {
-		errMsg := "speed up transaction is not supported"
+		errMsg := "speed up is not supported for private transactions"
 		logger.Error(errMsg)
-		return nil, errors.FeatureNotSupportedError(errMsg).ExtendComponent(sendTxComponent)
+		return nil, errors.InvalidParameterError(errMsg).ExtendComponent(sendTxComponent)
 	}
 
 	job := tx.Schedule.Jobs[len(tx.Schedule.Jobs)-1]

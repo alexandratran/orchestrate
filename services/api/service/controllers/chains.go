@@ -34,15 +34,15 @@ func (c *ChainsController) Append(router *mux.Router) {
 	router.Methods(http.MethodDelete).Path("/chains/{uuid}").HandlerFunc(c.delete)
 }
 
-// @Summary Retrieves a list of all registered chains
-// @Tags Chains
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Success 200 {array} api.ChainResponse{privateTxManager=entities.PrivateTxManager}
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /chains [get]
+// @Summary   Retrieves a list of all registered chains
+// @Tags      Chains
+// @Produce   json
+// @Security  ApiKeyAuth
+// @Security  JWTAuth
+// @Success   200  {array}   api.ChainResponse{privateTxManager=entities.PrivateTxManager}
+// @Failure   400  {object}  httputil.ErrorResponse  "Invalid request"
+// @Failure   500  {object}  httputil.ErrorResponse  "Internal server error"
+// @Router    /chains [get]
 func (c *ChainsController) search(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -67,17 +67,17 @@ func (c *ChainsController) search(rw http.ResponseWriter, request *http.Request)
 	_ = json.NewEncoder(rw).Encode(response)
 }
 
-// @Summary Retrieves a chain by ID
-// @Tags Chains
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param uuid path string true "ID of the chain"
-// @Success 200 {object} api.ChainResponse{privateTxManager=entities.PrivateTxManager}
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 404 {object} httputil.ErrorResponse "Chain not found"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /chains/{uuid} [get]
+// @Summary   Retrieves a chain by ID
+// @Tags      Chains
+// @Produce   json
+// @Security  ApiKeyAuth
+// @Security  JWTAuth
+// @Param     uuid  path      string  true  "ID of the chain"
+// @Success   200   {object}  api.ChainResponse{privateTxManager=entities.PrivateTxManager}
+// @Failure   400   {object}  httputil.ErrorResponse  "Invalid request"
+// @Failure   404   {object}  httputil.ErrorResponse  "Chain not found"
+// @Failure   500   {object}  httputil.ErrorResponse  "Internal server error"
+// @Router    /chains/{uuid} [get]
 func (c *ChainsController) getOne(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -91,19 +91,19 @@ func (c *ChainsController) getOne(rw http.ResponseWriter, request *http.Request)
 	_ = json.NewEncoder(rw).Encode(formatters.FormatChainResponse(chain))
 }
 
-// @Summary Updates a chain by ID
-// @Tags Chains
-// @Accept json
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param uuid path string true "ID of the chain"
-// @Param request body api.UpdateChainRequest{listener=api.UpdateListenerRequest,privateTxManager=api.PrivateTxManagerRequest} true "Chain update request"
-// @Success 200 {object} api.ChainResponse{privateTxManager=entities.PrivateTxManager}
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 404 {object} httputil.ErrorResponse "Chain not found"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /chains/{uuid} [patch]
+// @Summary   Updates a chain by ID
+// @Tags      Chains
+// @Accept    json
+// @Produce   json
+// @Security  ApiKeyAuth
+// @Security  JWTAuth
+// @Param     uuid     path      string                                                                                                   true  "ID of the chain"
+// @Param     request  body      api.UpdateChainRequest{listener=api.UpdateListenerRequest,privateTxManager=api.PrivateTxManagerRequest}  true  "Chain update request"
+// @Success   200      {object}  api.ChainResponse{privateTxManager=entities.PrivateTxManager}
+// @Failure   400      {object}  httputil.ErrorResponse  "Invalid request"
+// @Failure   404      {object}  httputil.ErrorResponse  "Chain not found"
+// @Failure   500      {object}  httputil.ErrorResponse  "Internal server error"
+// @Router    /chains/{uuid} [patch]
 func (c *ChainsController) update(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -125,17 +125,17 @@ func (c *ChainsController) update(rw http.ResponseWriter, request *http.Request)
 	_ = json.NewEncoder(rw).Encode(formatters.FormatChainResponse(chain))
 }
 
-// @Summary Registers a new chain
-// @Tags Chains
-// @Accept json
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param request body api.RegisterChainRequest{listener=api.RegisterListenerRequest,privateTxManager=api.PrivateTxManagerRequest} true "Chain registration request."
-// @Success 200 {object} api.ChainResponse{privateTxManager=entities.PrivateTxManager}
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /chains [post]
+// @Summary   Registers a new chain
+// @Tags      Chains
+// @Accept    json
+// @Produce   json
+// @Security  ApiKeyAuth
+// @Security  JWTAuth
+// @Param     request  body      api.RegisterChainRequest{listener=api.RegisterListenerRequest,privateTxManager=api.PrivateTxManagerRequest}  true  "Chain registration request."
+// @Success   200      {object}  api.ChainResponse{privateTxManager=entities.PrivateTxManager}
+// @Failure   400      {object}  httputil.ErrorResponse  "Invalid request"
+// @Failure   500      {object}  httputil.ErrorResponse  "Internal server error"
+// @Router    /chains [post]
 func (c *ChainsController) register(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -163,17 +163,17 @@ func (c *ChainsController) register(rw http.ResponseWriter, request *http.Reques
 	_ = json.NewEncoder(rw).Encode(formatters.FormatChainResponse(chain))
 }
 
-// @Summary Deletes a chain by ID
-// @Tags Chains
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param uuid path string true "ID of the chain"
-// @Success 204
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 404 {object} httputil.ErrorResponse "Chain not found"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /chains/{uuid} [delete]
+// @Summary   Deletes a chain by ID
+// @Tags      Chains
+// @Produce   json
+// @Security  ApiKeyAuth
+// @Security  JWTAuth
+// @Param     uuid  path  string  true  "ID of the chain"
+// @Success   204
+// @Failure   400  {object}  httputil.ErrorResponse  "Invalid request"
+// @Failure   404  {object}  httputil.ErrorResponse  "Chain not found"
+// @Failure   500  {object}  httputil.ErrorResponse  "Internal server error"
+// @Router    /chains/{uuid} [delete]
 func (c *ChainsController) delete(rw http.ResponseWriter, request *http.Request) {
 	ctx := request.Context()
 
