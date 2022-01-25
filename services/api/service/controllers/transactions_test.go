@@ -87,6 +87,9 @@ func (s *transactionsControllerTestSuite) SetupTest() {
 	s.sendTxUseCase = mocks.NewMockSendTxUseCase(ctrl)
 	s.getTxUseCase = mocks.NewMockGetTxUseCase(ctrl)
 	s.searchTxsUsecase = mocks.NewMockSearchTransactionsUseCase(ctrl)
+	s.speedUpTxUseCase = mocks.NewMockSpeedUpTxUseCase(ctrl)
+	s.callOffTxUseCase = mocks.NewMockCallOffTxUseCase(ctrl)
+	s.searchTxsUsecase = mocks.NewMockSearchTransactionsUseCase(ctrl)
 	s.defaultRetryInterval = time.Second * 2
 	s.userInfo = multitenancy.NewUserInfo("tenantOne", "username")
 	s.ctx = multitenancy.WithUserInfo(context.Background(), s.userInfo)
@@ -386,6 +389,71 @@ func (s *transactionsControllerTestSuite) TestGetOne() {
 		httpRequest := httptest.NewRequest(http.MethodGet, urlPath, nil).WithContext(s.ctx)
 
 		s.getTxUseCase.EXPECT().Execute(gomock.Any(), uuid, s.userInfo).
+			Return(nil, errors.NotFoundError(""))
+
+		s.router.ServeHTTP(rw, httpRequest)
+		assert.Equal(t, http.StatusNotFound, rw.Code)
+	})
+}
+
+func (s *transactionsControllerTestSuite) TestSpeedUp() {
+	uuid := "uuid"
+	increment := 0.3
+	urlPath := fmt.Sprintf("/transactions/%s/speed-up?increment=%f", uuid, increment)
+	txRequest := testutils.FakeTxRequest()
+
+	s.T().Run("should execute request successfully", func(t *testing.T) {
+		rw := httptest.NewRecorder()
+		httpRequest := httptest.NewRequest(http.MethodPut, urlPath, nil).WithContext(s.ctx)
+
+		s.speedUpTxUseCase.EXPECT().Execute(gomock.Any(), uuid, increment, s.userInfo).
+			Return(txRequest, nil)
+
+		s.router.ServeHTTP(rw, httpRequest)
+
+		response := formatters.FormatTxResponse(txRequest)
+		expectedBody, _ := json.Marshal(response)
+		assert.Equal(t, string(expectedBody)+"\n", rw.Body.String())
+		assert.Equal(t, http.StatusOK, rw.Code)
+	})
+
+	s.T().Run("should fail with 404 if NotFoundError is returned", func(t *testing.T) {
+		rw := httptest.NewRecorder()
+		httpRequest := httptest.NewRequest(http.MethodPut, urlPath, nil).WithContext(s.ctx)
+
+		s.speedUpTxUseCase.EXPECT().Execute(gomock.Any(), uuid, increment, s.userInfo).
+			Return(nil, errors.NotFoundError(""))
+
+		s.router.ServeHTTP(rw, httpRequest)
+		assert.Equal(t, http.StatusNotFound, rw.Code)
+	})
+}
+
+func (s *transactionsControllerTestSuite) TestCallOff() {
+	uuid := "uuid"
+	urlPath := fmt.Sprintf("/transactions/%s/call-off", uuid)
+	txRequest := testutils.FakeTxRequest()
+
+	s.T().Run("should execute request successfully", func(t *testing.T) {
+		rw := httptest.NewRecorder()
+		httpRequest := httptest.NewRequest(http.MethodPut, urlPath, nil).WithContext(s.ctx)
+
+		s.callOffTxUseCase.EXPECT().Execute(gomock.Any(), uuid, s.userInfo).
+			Return(txRequest, nil)
+
+		s.router.ServeHTTP(rw, httpRequest)
+
+		response := formatters.FormatTxResponse(txRequest)
+		expectedBody, _ := json.Marshal(response)
+		assert.Equal(t, string(expectedBody)+"\n", rw.Body.String())
+		assert.Equal(t, http.StatusOK, rw.Code)
+	})
+
+	s.T().Run("should fail with 404 if NotFoundError is returned", func(t *testing.T) {
+		rw := httptest.NewRecorder()
+		httpRequest := httptest.NewRequest(http.MethodPut, urlPath, nil).WithContext(s.ctx)
+
+		s.callOffTxUseCase.EXPECT().Execute(gomock.Any(), uuid, s.userInfo).
 			Return(nil, errors.NotFoundError(""))
 
 		s.router.ServeHTTP(rw, httpRequest)

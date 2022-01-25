@@ -287,14 +287,14 @@ func (c *TransactionsController) search(rw http.ResponseWriter, request *http.Re
 // @Failure      404        {object}  httputil.ErrorResponse  "Transaction request not found"
 // @Failure      500        {object}  httputil.ErrorResponse  "Internal server error"
 // @Router       /transactions/{uuid}/speed-up [put]
-func (c *TransactionsController) speedUp(rw http.ResponseWriter, request *http.Request) {
+func (c *TransactionsController) speedUp(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
-	ctx := request.Context()
-	var increment = 0.05
+	ctx := req.Context()
+	var increment = 0.05 // Default
 	var err error
 
-	uuid := mux.Vars(request)["uuid"]
-	incrementInput := mux.Vars(request)["increment"]
+	uuid := mux.Vars(req)["uuid"]
+	incrementInput := req.URL.Query().Get("increment")
 	if incrementInput != "" {
 		increment, err = strconv.ParseFloat(incrementInput, 64)
 		if err != nil {

@@ -2,6 +2,7 @@ package jobs
 
 import (
 	"context"
+	"math"
 	"math/big"
 
 	"github.com/consensys/orchestrate/pkg/toolkit/app/multitenancy"
@@ -49,18 +50,19 @@ func (uc *retryJobTxUseCase) Execute(ctx context.Context, jobUUID string, gasInc
 	if job.Status != entities.StatusPending {
 		errMessage := "cannot retry job transaction at the current status"
 		logger.WithField("status", job.Status).Error(errMessage)
-		return errors.InvalidStateError(errMessage)
+		return errors.InvalidStateError(errMessage).ExtendComponent(retryJobTxComponent)
 	}
 
 	job.InternalData.ParentJobUUID = jobUUID
 	job.Transaction.Data = txData
+	increment := int64(math.Trunc((gasIncrement + 1.0) * 100))
 	if job.Transaction.TransactionType == entities.LegacyTxType {
 		gasPrice := job.Transaction.GasPrice.ToInt()
-		txGasPrice := gasPrice.Mul(gasPrice, big.NewInt(10)).Div(gasPrice, big.NewInt(100))
+		txGasPrice := gasPrice.Mul(gasPrice, big.NewInt(increment)).Div(gasPrice, big.NewInt(100))
 		job.Transaction.GasPrice = utils.ToPtr(hexutil.Big(*txGasPrice)).(*hexutil.Big)
 	} else {
 		gasTipCap := job.Transaction.GasTipCap.ToInt()
-		txGasTipCap := gasTipCap.Mul(gasTipCap, big.NewInt(10)).Div(gasTipCap, big.NewInt(100))
+		txGasTipCap := gasTipCap.Mul(gasTipCap, big.NewInt(increment)).Div(gasTipCap, big.NewInt(100))
 		job.Transaction.GasTipCap = utils.ToPtr(hexutil.Big(*txGasTipCap)).(*hexutil.Big)
 	}
 
