@@ -15,7 +15,7 @@ type ErrorResponse struct {
 	Code    uint64 `json:"code,omitempty" example:"24000"`
 }
 
-// @deprecated: Migrate every usage of it to WriteHTTPErrorResponse
+// @deprecated:  Migrate every usage of it to WriteHTTPErrorResponse
 func WriteError(rw http.ResponseWriter, msg string, code int) {
 	var err error
 	switch code {

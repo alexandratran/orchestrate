@@ -105,7 +105,7 @@ services:
     volumes:
       - ./build/bin/orchestrate:/bin/main:ro
       - ./scripts/deps/certificates:/certificates
-#      - /go/bin/dlv:/usr/local/bin/dlv
+#      - /usr/local/bin/dlv:/usr/local/bin/dlv
     depends_on:
       - api-migration
     command: api run
@@ -116,7 +116,7 @@ services:
 #      - -c
 #      - |
 #        dlv --listen=:2345 --headless=true --api-version=2 --accept-multiclient exec /bin/main api run
-
+#
   tx-sender:
     <<: *container-common
     ports:

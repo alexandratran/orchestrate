@@ -1,5 +1,10 @@
 # Orchestrate Release Notes
 
+## v22.2.0 (Unreleased)
+### 🆕 Features
+* New available endpoint `/transaction/{TX_UUID}/speed-up` to retry transaction with a defined gas increment.
+* New available endpoint `/transaction/{TX_UUID}/call-off` resend a transaction with same nonce,empty data and 10% more gas than previous job.
+
 ## v21.12.2 (Unreleased)
 ### 🛠 Bug fixes
 * Fixed Chain Proxy issues caused by additional header being added to forwarded request.  

@@ -45,19 +45,19 @@ func (c *AccountsController) Append(router *mux.Router) {
 	router.Methods(http.MethodPost).Path("/accounts/verify-typed-data").HandlerFunc(c.verifyTypedDataSignature)
 }
 
-// @Summary Creates a new Account
-// @Description Creates a new Account
-// @Tags Accounts
-// @Accept json
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param request body api.CreateAccountRequest true "Account creation request"
-// @Success 200 {object} api.AccountResponse "Account object"
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 401 {object} httputil.ErrorResponse "Unauthorized"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /accounts [post]
+// @Summary      Creates a new Account
+// @Description  Creates a new Account
+// @Tags         Accounts
+// @Accept       json
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        request  body      api.CreateAccountRequest  true  "Account creation request"
+// @Success      200      {object}  api.AccountResponse       "Account object"
+// @Failure      400      {object}  httputil.ErrorResponse    "Invalid request"
+// @Failure      401      {object}  httputil.ErrorResponse    "Unauthorized"
+// @Failure      500      {object}  httputil.ErrorResponse    "Internal server error"
+// @Router       /accounts [post]
 func (c *AccountsController) create(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -79,18 +79,18 @@ func (c *AccountsController) create(rw http.ResponseWriter, request *http.Reques
 	_ = json.NewEncoder(rw).Encode(formatters.FormatAccountResponse(acc))
 }
 
-// @Summary Fetch a account by address
-// @Description Fetch a single account by address
-// @Tags Accounts
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param address path string true "selected account address"
-// @Success 200 {object} api.AccountResponse "Account found"
-// @Failure 404 {object} httputil.ErrorResponse "Account not found"
-// @Failure 401 {object} httputil.ErrorResponse "Unauthorized"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /accounts/{address} [get]
+// @Summary      Fetch a account by address
+// @Description  Fetch a single account by address
+// @Tags         Accounts
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        address  path      string                  true  "selected account address"
+// @Success      200      {object}  api.AccountResponse     "Account found"
+// @Failure      404      {object}  httputil.ErrorResponse  "Account not found"
+// @Failure      401      {object}  httputil.ErrorResponse  "Unauthorized"
+// @Failure      500      {object}  httputil.ErrorResponse  "Internal server error"
+// @Router       /accounts/{address} [get]
 func (c *AccountsController) getOne(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -110,19 +110,19 @@ func (c *AccountsController) getOne(rw http.ResponseWriter, request *http.Reques
 	_ = json.NewEncoder(rw).Encode(formatters.FormatAccountResponse(acc))
 }
 
-// @Summary Search accounts by provided filters
-// @Description Get a list of filtered accounts
-// @Tags Accounts
-// @Accept json
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param aliases query []string false "List of account aliases" collectionFormat(csv)
-// @Success 200 {array} api.AccountResponse "List of identities found"
-// @Failure 400 {object} httputil.ErrorResponse "Invalid filter in the request"
-// @Failure 401 {object} httputil.ErrorResponse "Unauthorized"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /accounts [get]
+// @Summary      Search accounts by provided filters
+// @Description  Get a list of filtered accounts
+// @Tags         Accounts
+// @Accept       json
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        aliases  query     []string                false  "List of account aliases"  collectionFormat(csv)
+// @Success      200      {array}   api.AccountResponse     "List of identities found"
+// @Failure      400      {object}  httputil.ErrorResponse  "Invalid filter in the request"
+// @Failure      401      {object}  httputil.ErrorResponse  "Unauthorized"
+// @Failure      500      {object}  httputil.ErrorResponse  "Internal server error"
+// @Router       /accounts [get]
 func (c *AccountsController) search(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -147,21 +147,21 @@ func (c *AccountsController) search(rw http.ResponseWriter, request *http.Reques
 	_ = json.NewEncoder(rw).Encode(response)
 }
 
-// @Summary Creates a new Account by importing a private key
-// @Description Creates a new Account by importing a private key
-// @Tags Accounts
-// @Accept json
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param request body api.ImportAccountRequest true "Account creation request"
-// @Success 200 {object} api.AccountResponse "Account object"
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 422 {object} httputil.ErrorResponse "Unprocessable entity"
-// @Failure 401 {object} httputil.ErrorResponse "Unauthorized"
-// @Failure 405 {object} httputil.ErrorResponse "Not allowed"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /accounts/import [post]
+// @Summary      Creates a new Account by importing a private key
+// @Description  Creates a new Account by importing a private key
+// @Tags         Accounts
+// @Accept       json
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        request  body      api.ImportAccountRequest  true  "Account creation request"
+// @Success      200      {object}  api.AccountResponse       "Account object"
+// @Failure      400      {object}  httputil.ErrorResponse    "Invalid request"
+// @Failure      422      {object}  httputil.ErrorResponse    "Unprocessable entity"
+// @Failure      401      {object}  httputil.ErrorResponse    "Unauthorized"
+// @Failure      405      {object}  httputil.ErrorResponse    "Not allowed"
+// @Failure      500      {object}  httputil.ErrorResponse    "Internal server error"
+// @Router       /accounts/import [post]
 func (c *AccountsController) importKey(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -183,21 +183,21 @@ func (c *AccountsController) importKey(rw http.ResponseWriter, request *http.Req
 	_ = json.NewEncoder(rw).Encode(formatters.FormatAccountResponse(acc))
 }
 
-// @Summary Update account by Address
-// @Description Update a specific account by Address
-// @Tags Accounts
-// @Accept json
-// @Produce json
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param request body api.UpdateAccountRequest true "Account update request"
-// @Param address path string true "selected account address"
-// @Success 200 {object} api.AccountResponse "Account found"
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 401 {object} httputil.ErrorResponse "Unauthorized"
-// @Failure 404 {object} httputil.ErrorResponse "Account not found"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /accounts/{address} [patch]
+// @Summary      Update account by Address
+// @Description  Update a specific account by Address
+// @Tags         Accounts
+// @Accept       json
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        request  body      api.UpdateAccountRequest  true  "Account update request"
+// @Param        address  path      string                    true  "selected account address"
+// @Success      200      {object}  api.AccountResponse       "Account found"
+// @Failure      400      {object}  httputil.ErrorResponse    "Invalid request"
+// @Failure      401      {object}  httputil.ErrorResponse    "Unauthorized"
+// @Failure      404      {object}  httputil.ErrorResponse    "Account not found"
+// @Failure      500      {object}  httputil.ErrorResponse    "Internal server error"
+// @Router       /accounts/{address} [patch]
 func (c *AccountsController) update(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	ctx := request.Context()
@@ -227,21 +227,21 @@ func (c *AccountsController) update(rw http.ResponseWriter, request *http.Reques
 	_ = json.NewEncoder(rw).Encode(formatters.FormatAccountResponse(accRes))
 }
 
-// @Summary Sign Message (EIP-191)
-// @Description Sign message, following EIP-191, data using selected account
-// @Tags Accounts
-// @Accept json
-// @Produce text/plain
-// @Security ApiKeyAuth
-// @Security JWTAuth
-// @Param request body api.SignMessageRequest true "Payload to sign"
-// @Param address path string true "selected account address"
-// @Success 200 {string} string "Signed payload"
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 401 {object} httputil.ErrorResponse "Unauthorized"
-// @Failure 404 {object} httputil.ErrorResponse "Account not found"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /accounts/{address}/sign-message [post]
+// @Summary      Sign Message (EIP-191)
+// @Description  Sign message, following EIP-191, data using selected account
+// @Tags         Accounts
+// @Accept       json
+// @Produce      text/plain
+// @Security     ApiKeyAuth
+// @Security     JWTAuth
+// @Param        request  body      api.SignMessageRequest  true  "Payload to sign"
+// @Param        address  path      string                  true  "selected account address"
+// @Success      200      {string}  string                  "Signed payload"
+// @Failure      400      {object}  httputil.ErrorResponse  "Invalid request"
+// @Failure      401      {object}  httputil.ErrorResponse  "Unauthorized"
+// @Failure      404      {object}  httputil.ErrorResponse  "Account not found"
+// @Failure      500      {object}  httputil.ErrorResponse  "Internal server error"
+// @Router       /accounts/{address}/sign-message [post]
 func (c *AccountsController) signMessage(rw http.ResponseWriter, request *http.Request) {
 	ctx := request.Context()
 	payloadRequest := &api.SignMessageRequest{}
@@ -279,20 +279,20 @@ func (c *AccountsController) signMessage(rw http.ResponseWriter, request *http.R
 	_, _ = rw.Write([]byte(signature))
 }
 
-// @Summary Signs typed data using an existing account following the EIP-712 standard
-// @Description Signs typed data using ECDSA and the private key of an existing account following the EIP-712 standard
-// @Tags Accounts
-// @Accept json
-// @Produce text/plain
-// @Param request body api.SignTypedDataRequest true "Typed data to sign"
-// @Param address path string true "selected account address"
-// @Success 200 {string} string "Signed payload"
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 401 {object} httputil.ErrorResponse "Unauthorized"
-// @Failure 404 {object} httputil.ErrorResponse "Account not found"
-// @Failure 422 {object} httputil.ErrorResponse "Invalid parameters"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /accounts/{address}/sign-typed-data [post]
+// @Summary      Signs typed data using an existing account following the EIP-712 standard
+// @Description  Signs typed data using ECDSA and the private key of an existing account following the EIP-712 standard
+// @Tags         Accounts
+// @Accept       json
+// @Produce      text/plain
+// @Param        request  body      api.SignTypedDataRequest  true  "Typed data to sign"
+// @Param        address  path      string                    true  "selected account address"
+// @Success      200      {string}  string                    "Signed payload"
+// @Failure      400      {object}  httputil.ErrorResponse    "Invalid request"
+// @Failure      401      {object}  httputil.ErrorResponse    "Unauthorized"
+// @Failure      404      {object}  httputil.ErrorResponse    "Account not found"
+// @Failure      422      {object}  httputil.ErrorResponse    "Invalid parameters"
+// @Failure      500      {object}  httputil.ErrorResponse    "Internal server error"
+// @Router       /accounts/{address}/sign-typed-data [post]
 func (c *AccountsController) signTypedData(rw http.ResponseWriter, request *http.Request) {
 	ctx := request.Context()
 	signRequest := &api.SignTypedDataRequest{}
@@ -333,17 +333,17 @@ func (c *AccountsController) signTypedData(rw http.ResponseWriter, request *http
 	_, _ = rw.Write([]byte(signature))
 }
 
-// @Summary Verifies the signature of a typed data message following the EIP-712 standard
-// @Description Verifies if a typed data message has been signed by the Ethereum account passed as argument following the EIP-712 standard
-// @Tags Accounts
-// @Accept json
-// @Param request body qkmutilstypes.VerifyTypedDataRequest true "Typed data to sign"
-// @Success 204
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 401 {object} httputil.ErrorResponse "Unauthorized"
-// @Failure 422 {object} httputil.ErrorResponse "Invalid parameters"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /accounts/verify-typed-data [post]
+// @Summary      Verifies the signature of a typed data message following the EIP-712 standard
+// @Description  Verifies if a typed data message has been signed by the Ethereum account passed as argument following the EIP-712 standard
+// @Tags         Accounts
+// @Accept       json
+// @Param        request  body  qkmutilstypes.VerifyTypedDataRequest  true  "Typed data to sign"
+// @Success      204
+// @Failure      400  {object}  httputil.ErrorResponse  "Invalid request"
+// @Failure      401  {object}  httputil.ErrorResponse  "Unauthorized"
+// @Failure      422  {object}  httputil.ErrorResponse  "Invalid parameters"
+// @Failure      500  {object}  httputil.ErrorResponse  "Internal server error"
+// @Router       /accounts/verify-typed-data [post]
 func (c *AccountsController) verifyTypedDataSignature(rw http.ResponseWriter, request *http.Request) {
 	verifyRequest := &qkmutilstypes.VerifyTypedDataRequest{}
 	err := jsonutils.UnmarshalBody(request.Body, verifyRequest)
@@ -361,17 +361,17 @@ func (c *AccountsController) verifyTypedDataSignature(rw http.ResponseWriter, re
 	rw.WriteHeader(http.StatusNoContent)
 }
 
-// @Summary Verifies the signature of a message (EIP-191)
-// @Description Verifies if a message has been signed by the Ethereum account passed as argument
-// @Tags Accounts
-// @Accept json
-// @Param request body qkmutilstypes.VerifyRequest true "signature and message to verify"
-// @Success 204
-// @Failure 400 {object} httputil.ErrorResponse "Invalid request"
-// @Failure 401 {object} httputil.ErrorResponse "Unauthorized"
-// @Failure 422 {object} httputil.ErrorResponse "Invalid parameters"
-// @Failure 500 {object} httputil.ErrorResponse "Internal server error"
-// @Router /accounts/verify-message [post]
+// @Summary      Verifies the signature of a message (EIP-191)
+// @Description  Verifies if a message has been signed by the Ethereum account passed as argument
+// @Tags         Accounts
+// @Accept       json
+// @Param        request  body  qkmutilstypes.VerifyRequest  true  "signature and message to verify"
+// @Success      204
+// @Failure      400  {object}  httputil.ErrorResponse  "Invalid request"
+// @Failure      401  {object}  httputil.ErrorResponse  "Unauthorized"
+// @Failure      422  {object}  httputil.ErrorResponse  "Invalid parameters"
+// @Failure      500  {object}  httputil.ErrorResponse  "Internal server error"
+// @Router       /accounts/verify-message [post]
 func (c *AccountsController) verifyMessageSignature(rw http.ResponseWriter, request *http.Request) {
 	verifyRequest := &qkmutilstypes.VerifyRequest{}
 	err := jsonutils.UnmarshalBody(request.Body, verifyRequest)

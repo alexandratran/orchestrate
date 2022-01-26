@@ -77,13 +77,13 @@ func (c *KafkaConsumer) Start(ctx context.Context) error {
 	}
 }
 
-func (c *KafkaConsumer) Stop(ctx context.Context) error {
+func (c *KafkaConsumer) Stop(_ context.Context) error {
 	c.cancel()
 	return nil
 }
 
 func (c *KafkaConsumer) WaitForEnvelope(id, topic string, timeout time.Duration) (*tx.Envelope, error) {
-	log.Debugf("waiting for envelope %s on topic %s. Timeout %ds", id, topic, timeout/time.Millisecond)
+	log.Debugf("waiting for envelope %s on topic %s. Timeout in %ds", id, topic, timeout/time.Millisecond)
 
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
@@ -101,6 +101,7 @@ func (c *KafkaConsumer) WaitForEnvelope(id, topic string, timeout time.Duration)
 
 	select {
 	case e := <-ch:
+		log.Debugf("envelope %s found in topic %s", id, topic)
 		return e, nil
 	case <-ctx.Done():
 		return nil, ctx.Err()

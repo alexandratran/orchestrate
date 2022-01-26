@@ -165,7 +165,7 @@ func (listener *MessageListener) processEnvelope(ctx context.Context, evlp *tx.E
 			var serr error
 			switch {
 			// Never retry on children jobs
-			case job.InternalData.ParentJobUUID == job.UUID:
+			case job.InternalData.ParentJobUUID != "":
 				serr = utils2.UpdateJobStatus(ctx, listener.jobClient, job,
 					entities.StatusFailed, err.Error(), nil)
 			// Retry over same message

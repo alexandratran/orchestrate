@@ -657,7 +657,7 @@
                 "summary": "Registers a new chain",
                 "parameters": [
                     {
-                        "description": "Chain registration request",
+                        "description": "Chain registration request.",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -1000,18 +1000,18 @@
                                     "type": "object",
                                     "properties": {
                                         "constructor": {
-                                            "$ref": "#/definitions/entities.Method"
+                                            "$ref": "#/definitions/entities.ABIComponent"
                                         },
                                         "events": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/entities.Event"
+                                                "$ref": "#/definitions/entities.ABIComponent"
                                             }
                                         },
                                         "methods": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/entities.Method"
+                                                "$ref": "#/definitions/entities.ABIComponent"
                                             }
                                         }
                                     }
@@ -1331,82 +1331,23 @@
                                     "type": "object",
                                     "properties": {
                                         "constructor": {
-                                            "$ref": "#/definitions/entities.Method"
+                                            "$ref": "#/definitions/entities.ABIComponent"
                                         },
                                         "events": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/entities.Event"
+                                                "$ref": "#/definitions/entities.ABIComponent"
                                             }
                                         },
                                         "methods": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/entities.Method"
+                                                "$ref": "#/definitions/entities.ABIComponent"
                                             }
                                         }
                                     }
                                 }
                             ]
-                        }
-                    },
-                    "404": {
-                        "description": "Contract not found",
-                        "schema": {
-                            "$ref": "#/definitions/httputil.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/httputil.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/contracts/{name}/{tag}/method-signatures": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    },
-                    {
-                        "JWTAuth": []
-                    }
-                ],
-                "description": "Get method signatures of registered contract by {name} and {tag}",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Contracts"
-                ],
-                "summary": "Get method signatures of registered contract",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "solidity contract registered name",
-                        "name": "name",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "solidity contract registered tag",
-                        "name": "tag",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "List of signatures",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
                         }
                     },
                     "404": {
@@ -2826,6 +2767,98 @@
                     }
                 }
             }
+        },
+        "/transactions/{uuid}/call-off": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    },
+                    {
+                        "JWTAuth": []
+                    }
+                ],
+                "description": "Call of transaction  by sending empty data transaction with same nonce and additional 10% more gas",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Call of transaction",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UUID of the transaction request",
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Transaction request not found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/transactions/{uuid}/speed-up": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    },
+                    {
+                        "JWTAuth": []
+                    }
+                ],
+                "description": "Speed up transaction time by an increase its gas price",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Speed up transaction timeIncrease transaction gas price",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UUID of the transaction request",
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "gas price increment percentage, default value is 0.05 (5%)",
+                        "name": "increment",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Transaction request not found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -2896,44 +2929,54 @@
             "type": "object",
             "properties": {
                 "chainID": {
+                    "description": "[Ethereum chain ID](https://besu.hyperledger.org/en/latest/Concepts/NetworkID-And-ChainID/).",
                     "type": "string",
                     "example": "2445"
                 },
                 "createdAt": {
+                    "description": "Date and time at which the chain was registered.",
                     "type": "string",
                     "example": "2020-07-09T12:35:42.115395Z"
                 },
                 "labels": {
+                    "description": "List of custom labels.",
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
                     }
                 },
                 "listenerBackOffDuration": {
+                    "description": "Time to wait before trying to fetch a new mined block.",
                     "type": "string",
                     "example": "5s"
                 },
                 "listenerCurrentBlock": {
+                    "description": "Current block.",
                     "type": "integer",
                     "example": 0
                 },
                 "listenerDepth": {
+                    "description": "Block depth after which the Transaction Listener considers a block final and processes it.",
                     "type": "integer",
                     "example": 0
                 },
                 "listenerExternalTxEnabled": {
+                    "description": "Whether the chain listens for external transactions not crafted by Orchestrate.",
                     "type": "boolean",
                     "example": false
                 },
                 "listenerStartingBlock": {
+                    "description": "Block at which the Transaction Listener starts processing transactions",
                     "type": "integer",
                     "example": 5000
                 },
                 "name": {
+                    "description": "Name of the chain.",
                     "type": "string",
                     "example": "mainnet"
                 },
                 "ownerID": {
+                    "description": "ID of the chain owner.",
                     "type": "string",
                     "example": "foo"
                 },
@@ -2941,14 +2984,17 @@
                     "$ref": "#/definitions/entities.PrivateTxManager"
                 },
                 "tenantID": {
+                    "description": "ID of the tenant executing the API.",
                     "type": "string",
                     "example": "tenant"
                 },
                 "updatedAt": {
+                    "description": "Date and time at which the chain details were updated.",
                     "type": "string",
                     "example": "2020-07-09T12:35:42.115395Z"
                 },
                 "urls": {
+                    "description": "URLs of Ethereum nodes connected to.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -2958,6 +3004,7 @@
                     ]
                 },
                 "uuid": {
+                    "description": "UUID of the registered chain.",
                     "type": "string",
                     "example": "b4374e6f-b28a-4bad-b4fe-bda36eaf849c"
                 }
@@ -2975,7 +3022,7 @@
                     "example": "0x6080604052348015600f57600080f..."
                 },
                 "constructor": {
-                    "$ref": "#/definitions/entities.Method"
+                    "$ref": "#/definitions/entities.ABIComponent"
                 },
                 "deployedBytecode": {
                     "type": "string",
@@ -2984,13 +3031,13 @@
                 "events": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entities.Event"
+                        "$ref": "#/definitions/entities.ABIComponent"
                     }
                 },
                 "methods": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entities.Method"
+                        "$ref": "#/definitions/entities.ABIComponent"
                     }
                 },
                 "name": {
@@ -3408,10 +3455,12 @@
             ],
             "properties": {
                 "type": {
+                    "description": "Currently supports `Tessera` and `EEA``.",
                     "type": "string",
                     "example": "Tessera"
                 },
                 "url": {
+                    "description": "Transaction manager endpoint.",
                     "type": "string",
                     "example": "http://tessera:3000"
                 }
@@ -3462,6 +3511,7 @@
             ],
             "properties": {
                 "labels": {
+                    "description": "List of custom labels. Useful for adding custom information to the chain.",
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
@@ -3471,6 +3521,7 @@
                     "$ref": "#/definitions/api.RegisterListenerRequest"
                 },
                 "name": {
+                    "description": "Name of the chain. Must be unique.",
                     "type": "string",
                     "example": "mainnet"
                 },
@@ -3478,6 +3529,7 @@
                     "$ref": "#/definitions/api.PrivateTxManagerRequest"
                 },
                 "urls": {
+                    "description": "List of URLs of Ethereum nodes to connect to.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -3557,18 +3609,22 @@
             "type": "object",
             "properties": {
                 "backOffDuration": {
+                    "description": "Time to wait before trying to fetch a new mined block (for example `1s` or `1m`, default is `5s`).",
                     "type": "string",
                     "example": "1s"
                 },
                 "depth": {
+                    "description": "Block depth after which the Transaction Listener considers a block final and processes it (default 0).",
                     "type": "integer",
                     "example": 0
                 },
                 "externalTxEnabled": {
+                    "description": "Whether to listen to external transactions not crafted by Orchestrate (default `false`).",
                     "type": "boolean",
                     "example": false
                 },
                 "fromBlock": {
+                    "description": "Block from which the Transaction Listener should start processing transactions (default `latest`).",
                     "type": "string",
                     "example": "latest"
                 }
@@ -3706,6 +3762,7 @@
         "api.TransactionParams": {
             "type": "object",
             "required": [
+                "contractName",
                 "methodSignature",
                 "to"
             ],
@@ -3721,6 +3778,14 @@
                     "items": {
                         "type": "object"
                     }
+                },
+                "contractName": {
+                    "type": "string",
+                    "example": "MyContract"
+                },
+                "contractTag": {
+                    "type": "string",
+                    "example": "v1.1.0"
                 },
                 "from": {
                     "type": "string",
@@ -4029,6 +4094,19 @@
                 }
             }
         },
+        "entities.ABIComponent": {
+            "type": "object",
+            "properties": {
+                "abi": {
+                    "type": "string",
+                    "example": "[{anonymous: false, inputs: [{indexed: false, name: account, type: address}, name: MinterAdded, type: event}]}]"
+                },
+                "signature": {
+                    "type": "string",
+                    "example": "transfer(address,uint256)"
+                }
+            }
+        },
         "entities.ETHTransaction": {
             "type": "object",
             "properties": {
@@ -4245,19 +4323,6 @@
                 }
             }
         },
-        "entities.Event": {
-            "type": "object",
-            "properties": {
-                "abi": {
-                    "type": "string",
-                    "example": "[{anonymous: false, inputs: [{indexed: false, name: account, type: address}, name: MinterAdded, type: event}]}]"
-                },
-                "signature": {
-                    "type": "string",
-                    "example": "transfer(address,uint256)"
-                }
-            }
-        },
         "entities.Log": {
             "type": "object",
             "properties": {
@@ -4274,35 +4339,27 @@
                 }
             }
         },
-        "entities.Method": {
-            "type": "object",
-            "properties": {
-                "abi": {
-                    "type": "string",
-                    "example": "[{anonymous: false, inputs: [{indexed: false, name: account, type: address}, name: MinterAdded, type: event}]}]"
-                },
-                "signature": {
-                    "type": "string",
-                    "example": "transfer(address,uint256)"
-                }
-            }
-        },
         "entities.PrivateTxManager": {
             "type": "object",
             "properties": {
                 "chainUUID": {
+                    "description": "UUID of the registered chain.",
                     "type": "string"
                 },
                 "createdAt": {
+                    "description": "Date and time that the private transaction manager was registered with the chain.",
                     "type": "string"
                 },
                 "type": {
+                    "description": "Currently supports `Tessera` and `EEA`.",
                     "type": "string"
                 },
                 "url": {
+                    "description": "Transaction manager endpoint.",
                     "type": "string"
                 },
                 "uuid": {
+                    "description": "UUID of the private transaction manager.",
                     "type": "string"
                 }
             }

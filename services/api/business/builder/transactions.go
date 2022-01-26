@@ -12,6 +12,8 @@ type transactionUseCases struct {
 	sendTransaction         usecases.SendTxUseCase
 	getTransaction          usecases.GetTxUseCase
 	searchTransactions      usecases.SearchTransactionsUseCase
+	speedUpTransactions     usecases.SpeedUpTxUseCase
+	callOffTransactions     usecases.CallOffTxUseCase
 }
 
 func newTransactionUseCases(
@@ -23,7 +25,8 @@ func newTransactionUseCases(
 	getContractUC usecases.GetContractUseCase,
 ) *transactionUseCases {
 	getTransactionUC := transactions.NewGetTxUseCase(db, schedulesUCs.GetSchedule())
-	sendTxUC := transactions.NewSendTxUseCase(db, searchChainsUC, jobUCs.StartJob(), jobUCs.CreateJob(), getTransactionUC, getFaucetCandidateUC)
+	sendTxUC := transactions.NewSendTxUseCase(db, searchChainsUC, jobUCs.StartJob(), jobUCs.CreateJob(), getTransactionUC, 
+		getFaucetCandidateUC)
 
 	return &transactionUseCases{
 		sendContractTransaction: transactions.NewSendContractTxUseCase(sendTxUC, getContractUC),
@@ -31,6 +34,8 @@ func newTransactionUseCases(
 		sendTransaction:         sendTxUC,
 		getTransaction:          getTransactionUC,
 		searchTransactions:      transactions.NewSearchTransactionsUseCase(db, getTransactionUC),
+		speedUpTransactions:     transactions.NewSpeedUpTxUseCase(db, getTransactionUC, jobUCs.retryJobTx),
+		callOffTransactions:     transactions.NewCallOffTxUseCase(db, getTransactionUC, jobUCs.retryJobTx),
 	}
 }
 
@@ -52,4 +57,12 @@ func (u *transactionUseCases) GetTransaction() usecases.GetTxUseCase {
 
 func (u *transactionUseCases) SearchTransactions() usecases.SearchTransactionsUseCase {
 	return u.searchTransactions
+}
+
+func (u *transactionUseCases) SpeedUpTransaction() usecases.SpeedUpTxUseCase {
+	return u.speedUpTransactions
+}
+
+func (u *transactionUseCases) CallOffTransaction() usecases.CallOffTxUseCase {
+	return u.callOffTransactions
 }

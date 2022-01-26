@@ -20,6 +20,7 @@ Feature: Nonce manager
       | faucet-{{account1}} |
       | faucet-{{account2}} |
       | faucet-{{account3}} |
+#      | faucet-geth-{{account1}} |
     Given I set the headers
       | Key         | Value                |
       | X-API-KEY   | {{global.api-key}}   |
@@ -73,6 +74,23 @@ Feature: Nonce manager
       """
     Then the response code should be 202
     Then Envelopes should be in topic "tx.decoded"
+#    When I send "POST" request to "{{global.api}}/transactions/transfer" with json:
+#      """
+#      {
+#        "chain": "{{chain.geth0.Name}}",
+#        "params": {
+#          "from": "{{global.nodes.geth[0].fundedPublicKeys[0]}}",
+#          "to": "{{account1}}",
+#          "value": "0x56BC75E2D63100000"
+#        },
+#        "labels": {
+#          "scenario.id": "{{scenarioID}}",
+#          "id": "faucet-geth-{{account1}}"
+#        }
+#      }
+#      """
+#    Then the response code should be 202
+#    Then Envelopes should be in topic "tx.decoded"
 
   Scenario: Nonce recalibrating
     Given I register the following alias
@@ -440,3 +458,93 @@ Feature: Nonce manager
     And Response should have the following fields
       | status | logs[0].status | logs[1].status | logs[2].status | transaction.nonce |
       | STORED | CREATED        | STARTED        | STORED         | 2                 |
+
+#  @geth
+#  Scenario: Speed up transaction
+#    Given I register the following alias
+#      | alias            | value           |
+#      | txOneID          | {{random.uuid}} |
+#      | gethContractTxID | {{random.uuid}} |
+#    Given I set the headers
+#      | Key         | Value                |
+#      | X-API-KEY   | {{global.api-key}}   |
+#      | X-TENANT-ID | {{tenant1.tenantID}} |
+#    When I send "POST" request to "{{global.api}}/transactions/deploy-contract" with json:
+#      """
+#      {
+#        "chain": "{{chain.geth0.Name}}",
+#        "params": {
+#          "contractName": "SimpleToken",
+#          "from": "{{account1}}",
+#          "maxFeePerGas": "0x5950101"
+#        },
+#        "labels": {
+#          "scenario.id": "{{scenarioID}}",
+#          "id": "{{gethContractTxID}}"
+#        }
+#      }
+#      """
+#    Then the response code should be 202
+#    Then I register the following response fields
+#      | alias  | path |
+#      | txUUID | uuid |
+#    Then I sleep "2s"
+#    When I send "PUT" request to "{{global.api}}/transactions/{{txUUID}}/speed-up?boost=0.2"
+#    Then the response code should be 200
+#    And Response should have the following fields
+#      | jobs[1].transaction.data | jobs[1].transaction.maxPriorityFeePerGas |
+#      | ~                        | 0x6B2CE01                                |
+#    Then I register the following response fields
+#      | alias        | path           |
+#      | jobs[1].uuid | speedUpJobUUID |
+#    Then Envelopes should be in topic "tx.sender"
+#    When I send "GET" request to "{{global.api}}/jobs/{{speedUpJobUUID}}"
+#    Then the response code should be 200
+#    And Response should have the following fields
+#      | status | logs[0].status | logs[1].status | logs[2].status | logs[3].status | transaction.hash |
+#      | MINED  | CREATED        | STARTED        | PENDING        | MINED          | ~                |
+#
+#  @geth
+#  Scenario: Call off transaction
+#    Given I register the following alias
+#      | alias            | value           |
+#      | txOneID          | {{random.uuid}} |
+#      | gethContractTxID | {{random.uuid}} |
+#    Given I set the headers
+#      | Key         | Value                |
+#      | X-API-KEY   | {{global.api-key}}   |
+#      | X-TENANT-ID | {{tenant1.tenantID}} |
+#    When I send "POST" request to "{{global.api}}/transactions/deploy-contract" with json:
+#      """
+#      {
+#        "chain": "{{chain.geth0.Name}}",
+#        "params": {
+#          "contractName": "SimpleToken",
+#          "from": "{{account1}}",
+#          "maxFeePerGas": "0x5B4C273"
+#        },
+#        "labels": {
+#          "scenario.id": "{{scenarioID}}",
+#          "id": "{{gethContractTxID}}"
+#        }
+#      }
+#      """
+#    Then the response code should be 202
+#    Then I register the following response fields
+#      | alias  | path |
+#      | txUUID | uuid |
+#    Then I sleep "2s"
+#    When I send "PUT" request to "{{global.api}}/transactions/{{txUUID}}/call-off"
+#    Then the response code should be 200
+#    And Response should have the following fields
+#      | jobs[1].transaction.data | jobs[1].transaction.maxPriorityFeePerGas |
+#      | -                        | 0x646D5E4                                |
+#    Then I register the following response fields
+#      | alias        | path           |
+#      | jobs[1].uuid | callOffJobUUID |
+#    Then Envelopes should be in topic "tx.sender"
+#    When I send "GET" request to "{{global.api}}/jobs/{{callOffJobUUID}}"
+#    Then the response code should be 200
+#    And Response should have the following fields
+#      | status | logs[0].status | logs[1].status | logs[2].status | logs[3].status | transaction.hash |
+#      | MINED  | CREATED        | STARTED        | PENDING        | MINED          | ~                |

@@ -33,6 +33,8 @@ type TransactionClient interface {
 	SendRawTransaction(ctx context.Context, request *types.RawTransactionRequest) (*types.TransactionResponse, error)
 	SendTransferTransaction(ctx context.Context, request *types.TransferRequest) (*types.TransactionResponse, error)
 	GetTxRequest(ctx context.Context, txRequestUUID string) (*types.TransactionResponse, error)
+	SendCallOffTransaction(ctx context.Context, txRequestUUID string) (*types.TransactionResponse, error)
+	SendSpeedUpTransaction(ctx context.Context, txRequestUUID string, increment *float64) (*types.TransactionResponse, error)
 }
 
 type ScheduleClient interface {
