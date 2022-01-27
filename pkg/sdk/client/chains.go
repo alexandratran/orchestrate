@@ -7,8 +7,8 @@ import (
 
 	clientutils "github.com/consensys/orchestrate/pkg/toolkit/app/http/client-utils"
 	"github.com/consensys/orchestrate/pkg/toolkit/app/http/httputil"
-	types "github.com/consensys/orchestrate/pkg/types/api"
-	"github.com/consensys/orchestrate/pkg/types/entities"
+	"github.com/consensys/orchestrate/src/api/service/types"
+	"github.com/consensys/orchestrate/src/entities"
 )
 
 func (c *HTTPClient) GetChain(ctx context.Context, uuid string) (*types.ChainResponse, error) {

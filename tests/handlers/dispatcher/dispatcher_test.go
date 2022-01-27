@@ -8,7 +8,7 @@ import (
 
 	"github.com/consensys/orchestrate/tests/service/e2e/cucumber/alias"
 
-	broker "github.com/consensys/orchestrate/pkg/broker/sarama"
+	broker "github.com/consensys/orchestrate/src/infra/broker/sarama"
 	"github.com/consensys/orchestrate/pkg/engine"
 	"github.com/consensys/orchestrate/pkg/toolkit/app/log"
 	"github.com/consensys/orchestrate/pkg/types/tx"

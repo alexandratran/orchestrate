@@ -91,10 +91,10 @@ gen-mocks:
 	@go generate -run mockgen ./...
 
 gen-swagger:
-	@go generate github.com/consensys/orchestrate/services/api/service/controllers
+	@go generate github.com/consensys/orchestrate/src/api/service/controllers
 
 serve-swagger: gen-swagger
-	@swagger serve -F=swagger ./public/swagger-specs/services/api/swagger.json
+	@swagger serve -F=swagger ./public/swagger-specs/src/api/swagger.json
 
 gen-deepcopy:
 	@bash scripts/deepcopy/generate.sh

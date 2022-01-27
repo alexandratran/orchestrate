@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	qkm "github.com/consensys/orchestrate/pkg/quorum-key-manager"
-	"github.com/consensys/orchestrate/pkg/toolkit/database/postgres"
+	"github.com/consensys/orchestrate/src/infra/database/postgres"
+	qkm "github.com/consensys/orchestrate/src/infra/quorum-key-manager"
 	qkmClient "github.com/consensys/quorum-key-manager/pkg/client"
 	"github.com/go-pg/pg/v9"
 	log "github.com/sirupsen/logrus"

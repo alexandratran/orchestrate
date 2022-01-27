@@ -6,7 +6,7 @@ package mock
 
 import (
 	context "context"
-	entities "github.com/consensys/orchestrate/pkg/types/entities"
+	entities "github.com/consensys/orchestrate/src/entities"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )

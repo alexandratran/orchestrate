@@ -6,7 +6,7 @@ import (
 
 	"github.com/consensys/orchestrate/pkg/errors"
 	"github.com/consensys/orchestrate/pkg/toolkit/app/auth/utils"
-	"github.com/consensys/orchestrate/pkg/types/entities"
+	"github.com/consensys/orchestrate/src/entities"
 )
 
 const AuthMethodJWT = "JWT"

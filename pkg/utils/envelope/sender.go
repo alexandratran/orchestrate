@@ -5,7 +5,7 @@ import (
 	encoding "github.com/consensys/orchestrate/pkg/encoding/sarama"
 	"github.com/consensys/orchestrate/pkg/errors"
 	authutils "github.com/consensys/orchestrate/pkg/toolkit/app/auth/utils"
-	"github.com/consensys/orchestrate/pkg/types/entities"
+	"github.com/consensys/orchestrate/src/entities"
 )
 
 func SendJobMessage(job *entities.Job, kafkaProducer sarama.SyncProducer, topic string) (partition int32, offset int64, err error) {

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/consensys/orchestrate/pkg/types/entities"
+	"github.com/consensys/orchestrate/src/entities"
 )
 
 type CustomClaims struct {

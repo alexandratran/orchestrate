@@ -1,9 +1,9 @@
 package sarama
 
 import (
-	"github.com/consensys/orchestrate/pkg/broker/sarama"
 	encoding "github.com/consensys/orchestrate/pkg/encoding/proto"
 	"github.com/consensys/orchestrate/pkg/errors"
+	"github.com/consensys/orchestrate/src/infra/broker/sarama"
 	"google.golang.org/protobuf/proto"
 )
 

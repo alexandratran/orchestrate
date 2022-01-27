@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/consensys/orchestrate/pkg/broker/sarama"
 	"github.com/consensys/orchestrate/pkg/toolkit/app/log"
 	"github.com/consensys/orchestrate/pkg/types/tx"
+	"github.com/consensys/orchestrate/src/infra/broker/sarama"
 	"github.com/consensys/orchestrate/tests/utils"
 	"github.com/consensys/orchestrate/tests/utils/chanregistry"
 	"github.com/consensys/orchestrate/tests/utils/tracker"

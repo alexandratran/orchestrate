@@ -5,7 +5,7 @@ import (
 
 	"encoding/json"
 
-	"github.com/consensys/orchestrate/pkg/types/api"
+	api "github.com/consensys/orchestrate/src/api/service/types"
 	"github.com/consensys/orchestrate/tests/service/e2e/utils"
 	"github.com/consensys/quorum-key-manager/pkg/client"
 	"github.com/cucumber/godog"

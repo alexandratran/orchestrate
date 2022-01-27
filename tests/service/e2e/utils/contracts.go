@@ -7,7 +7,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/consensys/orchestrate/pkg/types/entities"
+	"github.com/consensys/orchestrate/src/entities"
 	"github.com/consensys/quorum/common/hexutil"
 	gherkin "github.com/cucumber/messages-go/v10"
 	log "github.com/sirupsen/logrus"

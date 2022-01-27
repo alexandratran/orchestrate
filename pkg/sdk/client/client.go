@@ -7,8 +7,8 @@ import (
 
 	qkmtypes "github.com/consensys/quorum-key-manager/src/stores/api/types"
 
-	types "github.com/consensys/orchestrate/pkg/types/api"
-	"github.com/consensys/orchestrate/pkg/types/entities"
+	"github.com/consensys/orchestrate/src/api/service/types"
+	"github.com/consensys/orchestrate/src/entities"
 	ethcommon "github.com/ethereum/go-ethereum/common"
 	healthz "github.com/heptiolabs/healthcheck"
 	dto "github.com/prometheus/client_model/go"

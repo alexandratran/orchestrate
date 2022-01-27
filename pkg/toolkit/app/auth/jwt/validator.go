@@ -3,7 +3,7 @@ package jwt
 import (
 	"context"
 
-	"github.com/consensys/orchestrate/pkg/types/entities"
+	"github.com/consensys/orchestrate/src/entities"
 )
 
 //go:generate mockgen -source=validator.go -destination=mock/validator.go -package=mock

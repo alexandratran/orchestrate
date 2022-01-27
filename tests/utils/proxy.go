@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/consensys/orchestrate/pkg/toolkit/app/log"
-	"github.com/consensys/orchestrate/pkg/toolkit/ethclient"
 	"github.com/consensys/orchestrate/pkg/utils"
+	"github.com/consensys/orchestrate/src/infra/ethclient"
 
 	"github.com/cenkalti/backoff/v4"
 )

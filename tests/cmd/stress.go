@@ -4,7 +4,7 @@ import (
 	"context"
 	"os"
 
-	broker "github.com/consensys/orchestrate/pkg/broker/sarama"
+	broker "github.com/consensys/orchestrate/src/infra/broker/sarama"
 
 	"github.com/consensys/orchestrate/pkg/toolkit/app/log"
 	"github.com/consensys/orchestrate/pkg/utils"

@@ -5,7 +5,7 @@ import (
 
 	"github.com/consensys/orchestrate/pkg/errors"
 	"github.com/consensys/orchestrate/pkg/utils"
-	txlistener "github.com/consensys/orchestrate/services/tx-listener"
+	txlistener "github.com/consensys/orchestrate/src/tx-listener"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

@@ -1,8 +1,8 @@
 package api
 
 import (
-	"github.com/consensys/orchestrate/pkg/toolkit/database/postgres"
-	"github.com/consensys/orchestrate/services/api/store/postgres/migrations"
+	"github.com/consensys/orchestrate/src/api/store/postgres/migrations"
+	"github.com/consensys/orchestrate/src/infra/database/postgres"
 	"github.com/go-pg/pg/v9"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"

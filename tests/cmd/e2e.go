@@ -4,9 +4,9 @@ import (
 	"context"
 	"os"
 
-	broker "github.com/consensys/orchestrate/pkg/broker/sarama"
 	"github.com/consensys/orchestrate/pkg/errors"
 	"github.com/consensys/orchestrate/pkg/toolkit/app/log"
+	broker "github.com/consensys/orchestrate/src/infra/broker/sarama"
 
 	"github.com/consensys/orchestrate/pkg/utils"
 	"github.com/consensys/orchestrate/tests/service/e2e"

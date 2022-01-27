@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/consensys/orchestrate/pkg/toolkit/app/log"
-	"github.com/consensys/orchestrate/pkg/types/api"
+	api "github.com/consensys/orchestrate/src/api/service/types"
 	ethcommon "github.com/ethereum/go-ethereum/common"
 
 	orchestrateclient "github.com/consensys/orchestrate/pkg/sdk/client"

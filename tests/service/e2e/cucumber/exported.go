@@ -6,11 +6,11 @@ import (
 	"strings"
 	"sync"
 
-	broker "github.com/consensys/orchestrate/pkg/broker/sarama"
 	"github.com/consensys/orchestrate/pkg/sdk/client"
 	"github.com/consensys/orchestrate/pkg/toolkit/app/log"
 	"github.com/consensys/orchestrate/pkg/toolkit/app/multitenancy"
-	ethclient "github.com/consensys/orchestrate/pkg/toolkit/ethclient/rpc"
+	broker "github.com/consensys/orchestrate/src/infra/broker/sarama"
+	ethclient "github.com/consensys/orchestrate/src/infra/ethclient/rpc"
 	"github.com/consensys/orchestrate/tests/service/e2e/cucumber/alias"
 	"github.com/cucumber/godog"
 	"github.com/spf13/viper"

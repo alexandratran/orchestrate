@@ -3,7 +3,7 @@ package api
 import (
 	"os"
 
-	"github.com/consensys/orchestrate/services/api"
+	"github.com/consensys/orchestrate/src/api"
 
 	"github.com/consensys/orchestrate/pkg/errors"
 	"github.com/consensys/orchestrate/pkg/utils"

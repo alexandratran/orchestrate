@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/consensys/orchestrate/pkg/toolkit/app/auth/jwt/mock"
-	"github.com/consensys/orchestrate/pkg/types/entities"
+	"github.com/consensys/orchestrate/src/entities"
 	"github.com/golang/mock/gomock"
 
 	authjwt "github.com/consensys/orchestrate/pkg/toolkit/app/auth/jwt"

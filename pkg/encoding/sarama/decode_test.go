@@ -11,7 +11,7 @@ import (
 	"github.com/Shopify/sarama"
 	"google.golang.org/protobuf/proto"
 	"github.com/stretchr/testify/assert"
-	broker "github.com/consensys/orchestrate/pkg/broker/sarama"
+	broker "github.com/consensys/orchestrate/src/infra/broker/sarama"
 	"github.com/consensys/orchestrate/pkg/errors"
 )
 

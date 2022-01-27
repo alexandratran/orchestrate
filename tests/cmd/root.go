@@ -1,10 +1,10 @@
 package main
 
 import (
-	broker "github.com/consensys/orchestrate/pkg/broker/sarama"
 	"github.com/consensys/orchestrate/pkg/toolkit/app/auth"
 	"github.com/consensys/orchestrate/pkg/toolkit/app/log"
 	"github.com/consensys/orchestrate/pkg/toolkit/app/multitenancy"
+	broker "github.com/consensys/orchestrate/src/infra/broker/sarama"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )

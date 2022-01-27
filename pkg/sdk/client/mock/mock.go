@@ -6,8 +6,8 @@ package mock
 
 import (
 	context "context"
-	api "github.com/consensys/orchestrate/pkg/types/api"
-	entities "github.com/consensys/orchestrate/pkg/types/entities"
+	api "github.com/consensys/orchestrate/src/api/service/types"
+	entities "github.com/consensys/orchestrate/src/entities"
 	types "github.com/consensys/quorum-key-manager/src/stores/api/types"
 	types0 "github.com/consensys/quorum-key-manager/src/utils/api/types"
 	common "github.com/ethereum/go-ethereum/common"

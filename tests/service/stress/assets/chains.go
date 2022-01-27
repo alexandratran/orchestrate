@@ -6,9 +6,9 @@ import (
 
 	orchestrateclient "github.com/consensys/orchestrate/pkg/sdk/client"
 	"github.com/consensys/orchestrate/pkg/toolkit/app/log"
-	"github.com/consensys/orchestrate/pkg/toolkit/ethclient"
-	"github.com/consensys/orchestrate/pkg/types/api"
 	"github.com/consensys/orchestrate/pkg/utils"
+	api "github.com/consensys/orchestrate/src/api/service/types"
+	"github.com/consensys/orchestrate/src/infra/ethclient"
 	utils2 "github.com/consensys/orchestrate/tests/utils"
 )
 

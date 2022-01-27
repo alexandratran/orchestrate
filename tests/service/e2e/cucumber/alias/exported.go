@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"sync"
 
-	qkm "github.com/consensys/orchestrate/pkg/quorum-key-manager"
 	"github.com/consensys/orchestrate/pkg/sdk/client"
 	"github.com/consensys/orchestrate/pkg/toolkit/app/auth/key"
-	txlistener "github.com/consensys/orchestrate/services/tx-listener"
-	txsender "github.com/consensys/orchestrate/services/tx-sender"
+	qkm "github.com/consensys/orchestrate/src/infra/quorum-key-manager"
+	txlistener "github.com/consensys/orchestrate/src/tx-listener"
+	txsender "github.com/consensys/orchestrate/src/tx-sender"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )

@@ -11,8 +11,8 @@ import (
 
 	"github.com/consensys/orchestrate/pkg/sdk/client"
 	"github.com/consensys/orchestrate/pkg/toolkit/app/log"
-	"github.com/consensys/orchestrate/pkg/types/api"
-	"github.com/consensys/orchestrate/pkg/types/entities"
+	api "github.com/consensys/orchestrate/src/api/service/types"
+	"github.com/consensys/orchestrate/src/entities"
 	"github.com/consensys/quorum/common/hexutil"
 )
 

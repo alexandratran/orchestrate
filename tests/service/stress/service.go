@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/consensys/orchestrate/pkg/errors"
-	"github.com/consensys/orchestrate/pkg/toolkit/ethclient"
+	"github.com/consensys/orchestrate/src/infra/ethclient"
 	"github.com/spf13/viper"
 
 	"github.com/Shopify/sarama"

@@ -7,12 +7,12 @@ import (
 
 	utilstypes "github.com/consensys/quorum-key-manager/src/utils/api/types"
 
-	"github.com/consensys/orchestrate/pkg/types/api"
+	api "github.com/consensys/orchestrate/src/api/service/types"
 	qkmtypes "github.com/consensys/quorum-key-manager/src/stores/api/types"
 
 	clientutils "github.com/consensys/orchestrate/pkg/toolkit/app/http/client-utils"
 	"github.com/consensys/orchestrate/pkg/toolkit/app/http/httputil"
-	"github.com/consensys/orchestrate/pkg/types/entities"
+	"github.com/consensys/orchestrate/src/entities"
 	ethcommon "github.com/ethereum/go-ethereum/common"
 )
 
