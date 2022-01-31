@@ -3,11 +3,13 @@ package txsender
 import (
 	"context"
 
+	"github.com/consensys/orchestrate/src/infra/redis"
+	"github.com/consensys/orchestrate/src/infra/redis/redigo"
+
 	sarama2 "github.com/Shopify/sarama"
 	orchestrateClient "github.com/consensys/orchestrate/pkg/sdk/client"
 	"github.com/consensys/orchestrate/pkg/toolkit/app"
 	"github.com/consensys/orchestrate/pkg/toolkit/app/log"
-	dbredis "github.com/consensys/orchestrate/src/infra/database/redis"
 	ethclient "github.com/consensys/orchestrate/src/infra/ethclient/rpc"
 
 	"github.com/consensys/orchestrate/src/infra/broker/sarama"
@@ -19,6 +21,8 @@ import (
 func New(ctx context.Context) (*app.App, error) {
 	logger := log.FromContext(ctx)
 	config := NewConfig(viper.GetViper())
+	var redisClient redis.Client
+	var err error
 
 	sarama.InitSyncProducer(ctx)
 	qkm.Init()
@@ -26,10 +30,12 @@ func New(ctx context.Context) (*app.App, error) {
 	ethclient.Init(ctx)
 
 	if config.NonceManagerType == NonceManagerTypeRedis {
-		dbredis.Init()
+		redisClient, err = redigo.New(config.RedisCfg)
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	var err error
 	consumerGroups := make([]sarama2.ConsumerGroup, config.NConsumer)
 	hostnames := viper.GetStringSlice(sarama.KafkaURLViperKey)
 	for idx := 0; idx < config.NConsumer; idx++ {
@@ -48,7 +54,7 @@ func New(ctx context.Context) (*app.App, error) {
 		qkm.GlobalClient(),
 		orchestrateClient.GlobalClient(),
 		ethclient.GlobalClient(),
-		dbredis.GlobalClient(),
+		redisClient,
 	)
 }
 

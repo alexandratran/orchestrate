@@ -4,12 +4,13 @@ import (
 	"context"
 	"math/big"
 
+	"github.com/consensys/orchestrate/src/tx-sender/tx-sender/nonce"
+
 	"github.com/consensys/orchestrate/pkg/toolkit/app/log"
 	"github.com/consensys/orchestrate/pkg/types/tx"
 	"github.com/consensys/orchestrate/pkg/utils"
 	"github.com/consensys/orchestrate/src/entities"
 	"github.com/consensys/orchestrate/src/infra/ethclient"
-	"github.com/consensys/orchestrate/src/tx-sender/tx-sender/nonce"
 	usecases "github.com/consensys/orchestrate/src/tx-sender/tx-sender/use-cases"
 	"github.com/ethereum/go-ethereum"
 	ethcommon "github.com/ethereum/go-ethereum/common"

@@ -3,12 +3,12 @@ package builder
 import (
 	"github.com/consensys/orchestrate/pkg/sdk/client"
 	"github.com/consensys/orchestrate/src/infra/ethclient"
-	keymanager "github.com/consensys/quorum-key-manager/pkg/client"
 	"github.com/consensys/orchestrate/src/tx-sender/tx-sender/nonce"
 	usecases "github.com/consensys/orchestrate/src/tx-sender/tx-sender/use-cases"
 	"github.com/consensys/orchestrate/src/tx-sender/tx-sender/use-cases/crafter"
 	"github.com/consensys/orchestrate/src/tx-sender/tx-sender/use-cases/sender"
 	"github.com/consensys/orchestrate/src/tx-sender/tx-sender/use-cases/signer"
+	keymanager "github.com/consensys/quorum-key-manager/pkg/client"
 )
 
 type useCases struct {
@@ -19,8 +19,12 @@ type useCases struct {
 	sendTesseraMarkingTx usecases.SendTesseraMarkingTxUseCase
 }
 
-func NewUseCases(jobClient client.JobClient, keyManagerClient keymanager.KeyManagerClient,
-	ec ethclient.MultiClient, nonceManager nonce.Manager, chainRegistryURL string, checkerMaxRecovery uint64) usecases.UseCases {
+func NewUseCases(jobClient client.JobClient,
+	keyManagerClient keymanager.KeyManagerClient,
+	ec ethclient.MultiClient,
+	nonceManager nonce.Manager,
+	chainRegistryURL string,
+) usecases.UseCases {
 	signETHTransactionUC := signer.NewSignETHTransactionUseCase(keyManagerClient)
 	signEEATransactionUC := signer.NewSignEEATransactionUseCase(keyManagerClient)
 	signQuorumTransactionUC := signer.NewSignQuorumPrivateTransactionUseCase(keyManagerClient)

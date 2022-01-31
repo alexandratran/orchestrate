@@ -28,9 +28,13 @@ type sendTesseraMarkingTxUseCase struct {
 	logger           *log.Logger
 }
 
-func NewSendTesseraMarkingTxUseCase(signTx usecases.SignQuorumPrivateTransactionUseCase, crafter usecases.CraftTransactionUseCase,
-	ec ethclient.QuorumTransactionSender, jobClient client.JobClient, chainRegistryURL string,
-	nonceChecker nonce.Manager) usecases.SendTesseraMarkingTxUseCase {
+func NewSendTesseraMarkingTxUseCase(signTx usecases.SignQuorumPrivateTransactionUseCase,
+	crafter usecases.CraftTransactionUseCase,
+	ec ethclient.QuorumTransactionSender,
+	jobClient client.JobClient,
+	chainRegistryURL string,
+	nonceChecker nonce.Manager,
+) usecases.SendTesseraMarkingTxUseCase {
 	return &sendTesseraMarkingTxUseCase{
 		signTx:           signTx,
 		nonceChecker:     nonceChecker,

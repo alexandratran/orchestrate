@@ -1,34 +1,34 @@
 package redis
 
 import (
-	"github.com/consensys/orchestrate/src/infra/database/redis"
-	"github.com/consensys/orchestrate/src/tx-sender/store"
+	"github.com/consensys/orchestrate/src/infra/redis"
 )
 
-type nonceRecoveryTracker struct {
-	redisCli *redis.Client
+const recoverTrackerSuf = "recover-tracker"
+
+type NonceRecoveryTracker struct {
+	redisCli redis.Client
 }
 
-func NewNonceRecoveryTracker(redisCli *redis.Client) store.RecoveryTracker {
-	return &nonceRecoveryTracker{
+func NewNonceRecoveryTracker(redisCli redis.Client) *NonceRecoveryTracker {
+	return &NonceRecoveryTracker{
 		redisCli: redisCli,
 	}
 }
 
-const recoverTrackerSuf = "recover-tracker"
-
-func (t *nonceRecoveryTracker) Recovering(key string) (count uint64) {
-	v, b, err := t.redisCli.LoadUint64(computeKey(key, recoverTrackerSuf))
-	if err != nil || !b {
+func (t *NonceRecoveryTracker) Recovering(key string) uint64 {
+	v, err := t.redisCli.LoadUint64(computeKey(key, recoverTrackerSuf))
+	if err != nil {
 		return 0
 	}
+
 	return v
 }
 
-func (t *nonceRecoveryTracker) Recover(key string) {
+func (t *NonceRecoveryTracker) Recover(key string) {
 	_ = t.redisCli.Incr(computeKey(key, recoverTrackerSuf))
 }
 
-func (t *nonceRecoveryTracker) Recovered(key string) {
+func (t *NonceRecoveryTracker) Recovered(key string) {
 	_ = t.redisCli.Delete(computeKey(key, recoverTrackerSuf))
 }

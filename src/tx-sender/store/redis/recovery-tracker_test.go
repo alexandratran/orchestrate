@@ -3,34 +3,40 @@
 package redis
 
 import (
+	"github.com/consensys/orchestrate/src/infra/redis/mocks"
+	"github.com/golang/mock/gomock"
 	"testing"
 
-	"github.com/alicebob/miniredis"
-	"github.com/consensys/orchestrate/src/infra/database/redis"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRecoveryTrackerRedis(t *testing.T) {
-	mredis, _ := miniredis.Run()
-	conf := &redis.Config{
-		Expiration: 1,
-		Host:       mredis.Host(),
-		Port:       mredis.Port(),
-	}
-
-	pool, _ := redis.NewPool(conf)
-	rt := NewNonceRecoveryTracker(redis.NewClient(pool, conf))
+func TestRecoveryTracker(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
 	testKey := "recovery-tracker-redis"
-	n := rt.Recovering(testKey)
-	assert.Equal(t, uint64(0), n)
+	expectedKey := computeKey(testKey, recoverTrackerSuf)
 
-	rt.Recover(testKey)
-	rt.Recover(testKey)
-	n = rt.Recovering(testKey)
-	assert.Equal(t, uint64(2), n)
+	mockRedisClient := mocks.NewMockClient(ctrl)
 
-	rt.Recovered(testKey)
-	n = rt.Recovering(testKey)
-	assert.Equal(t, uint64(0), n)
+	rt := NewNonceRecoveryTracker(mockRedisClient)
+
+	t.Run("should call recovering nonce successfully", func(t *testing.T) {
+		mockRedisClient.EXPECT().LoadUint64(expectedKey).Return(uint64(0), nil)
+
+		n := rt.Recovering(testKey)
+		assert.Equal(t, uint64(0), n)
+	})
+
+	t.Run("should call recover nonce successfully", func(t *testing.T) {
+		mockRedisClient.EXPECT().Incr(expectedKey).Return(nil)
+
+		rt.Recover(testKey)
+	})
+
+	t.Run("should call recovered nonce successfully", func(t *testing.T) {
+		mockRedisClient.EXPECT().Delete(expectedKey).Return(nil)
+
+		rt.Recovered(testKey)
+	})
 }

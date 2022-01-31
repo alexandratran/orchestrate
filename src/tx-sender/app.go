@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/consensys/orchestrate/src/tx-sender/tx-sender/nonce"
+	"github.com/consensys/orchestrate/src/tx-sender/tx-sender/nonce/manager"
+
 	"github.com/Shopify/sarama"
 	"github.com/cenkalti/backoff/v4"
 	"github.com/consensys/orchestrate/pkg/errors"
@@ -12,13 +15,12 @@ import (
 	"github.com/consensys/orchestrate/pkg/toolkit/app"
 	"github.com/consensys/orchestrate/pkg/toolkit/app/log"
 	pkgsarama "github.com/consensys/orchestrate/src/infra/broker/sarama"
-	dbredis "github.com/consensys/orchestrate/src/infra/database/redis"
 	"github.com/consensys/orchestrate/src/infra/ethclient"
+	"github.com/consensys/orchestrate/src/infra/redis"
 	"github.com/consensys/orchestrate/src/tx-sender/service"
 	"github.com/consensys/orchestrate/src/tx-sender/store/memory"
-	"github.com/consensys/orchestrate/src/tx-sender/store/redis"
+	redisnoncemngr "github.com/consensys/orchestrate/src/tx-sender/store/redis"
 	"github.com/consensys/orchestrate/src/tx-sender/tx-sender/builder"
-	"github.com/consensys/orchestrate/src/tx-sender/tx-sender/nonce"
 	keymanager "github.com/consensys/quorum-key-manager/pkg/client"
 	"github.com/hashicorp/go-multierror"
 )
@@ -44,7 +46,7 @@ func NewTxSender(
 	keyManagerClient keymanager.KeyManagerClient,
 	apiClient api.OrchestrateClient,
 	ec ethclient.MultiClient,
-	redisCli *dbredis.Client,
+	redisCli redis.Client,
 ) (*app.App, error) {
 	appli, err := app.New(config.App, readinessOpt(apiClient, redisCli), app.MetricsOpt())
 	if err != nil {
@@ -53,10 +55,10 @@ func NewTxSender(
 
 	var nm nonce.Manager
 	if config.NonceManagerType == NonceManagerTypeInMemory {
-		nm = nonce.NewNonceManager(ec, memory.NewNonceSender(config.NonceManagerExpiration), memory.NewNonceRecoveryTracker(),
+		nm = manager.NewNonceManager(ec, memory.NewNonceSender(config.NonceManagerExpiration), memory.NewNonceRecoveryTracker(),
 			config.ProxyURL, config.NonceMaxRecovery)
 	} else if config.NonceManagerType == NonceManagerTypeRedis {
-		nm = nonce.NewNonceManager(ec, redis.NewNonceSender(redisCli), redis.NewNonceRecoveryTracker(redisCli),
+		nm = manager.NewNonceManager(ec, redisnoncemngr.NewNonceSender(redisCli, config.NonceManagerExpiration), redisnoncemngr.NewNonceRecoveryTracker(redisCli),
 			config.ProxyURL, config.NonceMaxRecovery)
 	}
 
@@ -80,8 +82,7 @@ func (d *txSenderDaemon) Run(ctx context.Context) error {
 	d.logger.Debug("starting transaction sender")
 
 	// Create business layer use cases
-	useCases := builder.NewUseCases(d.jobClient, d.keyManagerClient, d.ec, d.nonceManager,
-		d.config.ProxyURL, d.config.NonceMaxRecovery)
+	useCases := builder.NewUseCases(d.jobClient, d.keyManagerClient, d.ec, d.nonceManager, d.config.ProxyURL)
 
 	// Create service layer listener
 	listener := service.NewMessageListener(useCases, d.jobClient, d.producer, d.config.RecoverTopic, d.config.SenderTopic,
@@ -129,7 +130,7 @@ func (d *txSenderDaemon) Close() error {
 	return gerr
 }
 
-func readinessOpt(apiClient api.MetricClient, redisCli *dbredis.Client) app.Option {
+func readinessOpt(apiClient api.MetricClient, redisCli redis.Client) app.Option {
 	return func(ap *app.App) error {
 		ap.AddReadinessCheck("kafka", pkgsarama.GlobalClientChecker())
 		ap.AddReadinessCheck("api", apiClient.Checker())

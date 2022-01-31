@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/consensys/orchestrate/cmd/flags"
+	"github.com/consensys/orchestrate/src/infra/redis/redigo"
+
 	authkey "github.com/consensys/orchestrate/pkg/toolkit/app/auth/key"
 	"github.com/consensys/orchestrate/pkg/toolkit/app/log"
 
@@ -14,7 +17,6 @@ import (
 	metricregistry "github.com/consensys/orchestrate/pkg/toolkit/app/metrics/registry"
 	tcpmetrics "github.com/consensys/orchestrate/pkg/toolkit/tcp/metrics"
 	broker "github.com/consensys/orchestrate/src/infra/broker/sarama"
-	"github.com/consensys/orchestrate/src/infra/database/redis"
 	qkm "github.com/consensys/orchestrate/src/infra/quorum-key-manager"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -76,6 +78,8 @@ const (
 
 // Flags register flags for tx sentry
 func Flags(f *pflag.FlagSet) {
+	flags.RedisFlags(f)
+
 	log.Flags(f)
 	authkey.Flags(f)
 	broker.KafkaConsumerFlags(f)
@@ -85,7 +89,6 @@ func Flags(f *pflag.FlagSet) {
 	orchestrateclient.Flags(f)
 	app.MetricFlags(f)
 	metricregistry.Flags(f, tcpmetrics.ModuleName)
-	redis.Flags(f)
 
 	maxRecovery(f)
 	nonceManagerType(f)
@@ -131,14 +134,11 @@ type Config struct {
 	BckOff                 backoff.BackOff
 	NonceMaxRecovery       uint64
 	NonceManagerType       string
-	RedisCfg               *redis.Config
+	RedisCfg               *redigo.Config
 	NonceManagerExpiration time.Duration
 }
 
 func NewConfig(vipr *viper.Viper) *Config {
-	redisCfg := redis.NewConfig(vipr)
-	redisCfg.Expiration = int(vipr.GetDuration(NonceManagerExpirationViperKey).Milliseconds())
-
 	return &Config{
 		App:                    app.NewConfig(vipr),
 		GroupName:              vipr.GetString(broker.ConsumerGroupNameViperKey),
@@ -149,7 +149,7 @@ func NewConfig(vipr *viper.Viper) *Config {
 		BckOff:                 retryMessageBackOff(),
 		NonceManagerType:       vipr.GetString(nonceManagerTypeViperKey),
 		NonceManagerExpiration: vipr.GetDuration(NonceManagerExpirationViperKey),
-		RedisCfg:               redisCfg,
+		RedisCfg:               flags.NewRedisConfig(vipr),
 		NConsumer:              int(vipr.GetUint64(KafkaConsumerViperKey)),
 	}
 }

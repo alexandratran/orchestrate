@@ -4,7 +4,7 @@ package store
 
 type NonceSender interface {
 	// GetLastSent retrieves last sent nonce
-	GetLastSent(key string) (nonce uint64, ok bool, err error)
+	GetLastSent(key string) (uint64, error)
 
 	// IncrLastSent increment last sent nonce
 	IncrLastSent(key string) error

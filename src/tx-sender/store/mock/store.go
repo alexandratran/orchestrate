@@ -33,13 +33,12 @@ func (m *MockNonceSender) EXPECT() *MockNonceSenderMockRecorder {
 }
 
 // GetLastSent mocks base method
-func (m *MockNonceSender) GetLastSent(key string) (uint64, bool, error) {
+func (m *MockNonceSender) GetLastSent(key string) (uint64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetLastSent", key)
 	ret0, _ := ret[0].(uint64)
-	ret1, _ := ret[1].(bool)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // GetLastSent indicates an expected call of GetLastSent

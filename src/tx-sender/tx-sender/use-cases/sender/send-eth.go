@@ -28,9 +28,13 @@ type sendETHTxUseCase struct {
 	logger           *log.Logger
 }
 
-func NewSendEthTxUseCase(signTx usecases.SignETHTransactionUseCase, crafter usecases.CraftTransactionUseCase,
-	ec ethclient.TransactionSender, jobClient client.JobClient, chainRegistryURL string,
-	nonceChecker nonce.Manager) usecases.SendETHTxUseCase {
+func NewSendEthTxUseCase(signTx usecases.SignETHTransactionUseCase,
+	crafter usecases.CraftTransactionUseCase,
+	ec ethclient.TransactionSender,
+	jobClient client.JobClient,
+	chainRegistryURL string,
+	nonceChecker nonce.Manager,
+) usecases.SendETHTxUseCase {
 	return &sendETHTxUseCase{
 		jobClient:        jobClient,
 		ec:               ec,

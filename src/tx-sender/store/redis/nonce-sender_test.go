@@ -3,47 +3,53 @@
 package redis
 
 import (
+	"github.com/consensys/orchestrate/src/infra/redis/mocks"
+	"github.com/golang/mock/gomock"
 	"testing"
+	"time"
 
-	"github.com/alicebob/miniredis"
-	"github.com/consensys/orchestrate/src/infra/database/redis"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNonceSenderRedis(t *testing.T) {
-	mredis, _ := miniredis.Run()
-	conf := &redis.Config{
-		Expiration: 1,
-		Host:       mredis.Host(),
-		Port:       mredis.Port(),
-	}
-
-	pool, _ := redis.NewPool(conf)
-	ns := NewNonceSender(redis.NewClient(pool, conf))
+func TestNonceSender(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
 	testKey := "nonce-sender-redis"
-	n, ok, err := ns.GetLastSent(testKey)
-	assert.NoError(t, err)
-	assert.False(t, ok)
-	assert.Equal(t, uint64(0), n)
+	expectedKey := computeKey(testKey, lastSentSuf)
+	expiration := 100 * time.Millisecond
 
-	err = ns.SetLastSent(testKey, 10)
-	assert.NoError(t, err)
+	mockRedisClient := mocks.NewMockClient(ctrl)
 
-	n, ok, err = ns.GetLastSent(testKey)
-	assert.NoError(t, err)
-	assert.True(t, ok)
-	assert.Equal(t, uint64(10), n)
+	ns := NewNonceSender(mockRedisClient, expiration)
 
-	err = ns.IncrLastSent(testKey)
-	assert.NoError(t, err)
-	n, _, _ = ns.GetLastSent(testKey)
-	assert.Equal(t, uint64(11), n)
+	t.Run("should set nonce successfully ", func(t *testing.T) {
+		mockRedisClient.EXPECT().Set(expectedKey, 100, uint64(10)).Return(nil)
 
-	err = ns.DeleteLastSent(testKey)
-	assert.NoError(t, err)
-	n, ok, err = ns.GetLastSent(testKey)
-	assert.NoError(t, err)
-	assert.False(t, ok)
-	assert.Equal(t, uint64(0), n)
+		err := ns.SetLastSent(testKey, 10)
+		assert.NoError(t, err)
+	})
+
+	t.Run("should get last sent successfully ", func(t *testing.T) {
+		expectedValue := uint64(10)
+		mockRedisClient.EXPECT().LoadUint64(expectedKey).Return(expectedValue, nil)
+
+		n, err := ns.GetLastSent(testKey)
+		assert.NoError(t, err)
+		assert.Equal(t, expectedValue, n)
+	})
+
+	t.Run("should increment nonce successfully ", func(t *testing.T) {
+		mockRedisClient.EXPECT().Incr(expectedKey).Return(nil)
+
+		err := ns.IncrLastSent(testKey)
+		assert.NoError(t, err)
+	})
+
+	t.Run("should delete nonce successfully ", func(t *testing.T) {
+		mockRedisClient.EXPECT().Delete(expectedKey).Return(nil)
+
+		err := ns.DeleteLastSent(testKey)
+		assert.NoError(t, err)
+	})
 }

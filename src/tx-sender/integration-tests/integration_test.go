@@ -58,7 +58,7 @@ func TestTxSender(t *testing.T) {
 	suite.Run(t, s)
 }
 
-func (s *txSenderTestSuite) TestTxSender_Ethereum() {
+func (s *txSenderTestSuite) TestEthereum() {
 	if s.err != nil {
 		s.env.logger.Warn("skipping test...")
 		return

@@ -1,36 +1,38 @@
 package redis
 
 import (
-	"github.com/consensys/orchestrate/src/infra/database/redis"
-	"github.com/consensys/orchestrate/src/tx-sender/store"
+	"time"
+
+	"github.com/consensys/orchestrate/src/infra/redis"
 )
-
-type nonceSender struct {
-	redis *redis.Client
-}
-
-// NewNonceSender creates a new mock NonceManager
-func NewNonceSender(client *redis.Client) store.NonceSender {
-	return &nonceSender{
-		redis: client,
-	}
-}
 
 const lastSentSuf = "last-sent"
 
-func (ns *nonceSender) GetLastSent(key string) (nonce uint64, ok bool, err error) {
+type NonceSender struct {
+	redis      redis.Client
+	expiration int
+}
+
+// NewNonceSender creates a new mock NonceManager
+func NewNonceSender(client redis.Client, expiration time.Duration) *NonceSender {
+	return &NonceSender{
+		redis:      client,
+		expiration: int(expiration.Milliseconds()),
+	}
+}
+
+func (ns *NonceSender) GetLastSent(key string) (uint64, error) {
 	return ns.redis.LoadUint64(computeKey(key, lastSentSuf))
 }
 
-func (ns *nonceSender) SetLastSent(key string, value uint64) error {
-	return ns.redis.Set(computeKey(key, lastSentSuf), value)
+func (ns *NonceSender) SetLastSent(key string, value uint64) error {
+	return ns.redis.Set(computeKey(key, lastSentSuf), ns.expiration, value)
 }
 
-func (ns *nonceSender) IncrLastSent(key string) error {
+func (ns *NonceSender) IncrLastSent(key string) error {
 	return ns.redis.Incr(computeKey(key, lastSentSuf))
 }
 
-// IncrLastSent increment last sent nonce
-func (ns *nonceSender) DeleteLastSent(key string) error {
+func (ns *NonceSender) DeleteLastSent(key string) error {
 	return ns.redis.Delete(computeKey(key, lastSentSuf))
 }

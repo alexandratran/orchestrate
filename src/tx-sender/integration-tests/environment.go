@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/consensys/orchestrate/src/infra/redis/redigo"
+
 	sarama2 "github.com/Shopify/sarama"
 	"github.com/alicebob/miniredis"
 	"github.com/cenkalti/backoff/v4"
@@ -20,12 +22,12 @@ import (
 	httputils "github.com/consensys/orchestrate/pkg/toolkit/app/http"
 	"github.com/consensys/orchestrate/pkg/utils"
 	"github.com/consensys/orchestrate/src/infra/broker/sarama"
-	redis2 "github.com/consensys/orchestrate/src/infra/database/redis"
 	ethclient "github.com/consensys/orchestrate/src/infra/ethclient/rpc"
 	qkm "github.com/consensys/orchestrate/src/infra/quorum-key-manager"
+	"github.com/consensys/orchestrate/src/infra/redis"
 	txsender "github.com/consensys/orchestrate/src/tx-sender"
 	"github.com/consensys/orchestrate/src/tx-sender/store"
-	"github.com/consensys/orchestrate/src/tx-sender/store/redis"
+	noncesender "github.com/consensys/orchestrate/src/tx-sender/store/redis"
 	qkmclient "github.com/consensys/quorum-key-manager/pkg/client"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -54,7 +56,7 @@ type IntegrationEnvironment struct {
 	producer   sarama2.SyncProducer
 	metricsURL string
 	ns         store.NonceSender
-	redis      *redis2.Client
+	redis      redis.Client
 	srvConfig  *txsender.Config
 }
 
@@ -81,7 +83,7 @@ func NewIntegrationEnvironment(ctx context.Context) (*IntegrationEnvironment, er
 		"--key-manager-url=" + keyManagerURL,
 		"--key-manager-store-name=" + qkmStoreName,
 		"--api-url=" + apiURL,
-		"--log-level=warn",
+		"--log-level=panic",
 	}
 
 	err := flgs.Parse(args)
@@ -105,27 +107,30 @@ func NewIntegrationEnvironment(ctx context.Context) (*IntegrationEnvironment, er
 
 	dockerClient, err := docker.NewClient(composition)
 	if err != nil {
-		logger.WithError(err).Error("cannot initialize new environment")
+		logger.WithError(err).Error("cannot initialize docker client")
 		return nil, err
 	}
 
-	mredis, _ := miniredis.Run()
-	conf := &redis2.Config{
-		Expiration: 100000,
-		Host:       mredis.Host(),
-		Port:       mredis.Port(),
+	mredis, err := miniredis.Run()
+	if err != nil {
+		logger.WithError(err).Error("cannot initialize miniredis")
+		return nil, err
 	}
 
-	pool, _ := redis2.NewPool(conf)
-	redisCli := redis2.NewClient(pool, conf)
+	redisClient, err := redigo.New(&redigo.Config{Host: mredis.Host(), Port: mredis.Port()})
+	if err != nil {
+		logger.WithError(err).Error("cannot initialize redis client")
+		return nil, err
+	}
+
 	return &IntegrationEnvironment{
 		ctx:        ctx,
 		logger:     logger,
 		client:     dockerClient,
 		metricsURL: "http://localhost:" + envMetricsPort,
 		producer:   sarama.GlobalSyncProducer(),
-		redis:      redisCli,
-		ns:         redis.NewNonceSender(redisCli),
+		redis:      redisClient,
+		ns:         noncesender.NewNonceSender(redisClient, 100000),
 	}, nil
 }
 
@@ -219,7 +224,7 @@ func (env *IntegrationEnvironment) Teardown(ctx context.Context) {
 	}
 }
 
-func newTxSender(ctx context.Context, txSenderConfig *txsender.Config, redisCli *redis2.Client) (*app.App, error) {
+func newTxSender(ctx context.Context, txSenderConfig *txsender.Config, redisCli redis.Client) (*app.App, error) {
 	// Initialize dependencies
 	sarama.InitSyncProducer(ctx)
 	sarama.InitConsumerGroup(ctx, txSenderConfig.GroupName)

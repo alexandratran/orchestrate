@@ -126,6 +126,7 @@ services:
     volumes:
       - ./build/bin/orchestrate:/bin/main
       - ./scripts/deps/certificates:/certificates
+      - ./scripts/deps/ca:/ca
     depends_on:
       - api
     command: tx-sender run

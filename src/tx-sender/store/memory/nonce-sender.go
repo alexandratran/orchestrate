@@ -38,7 +38,7 @@ func NewNonceSender(ttl time.Duration) store.NonceSender {
 
 const lastSentSuf = "last-sent"
 
-func (nm *nonceSender) GetLastSent(key string) (nonce uint64, ok bool, err error) {
+func (nm *nonceSender) GetLastSent(key string) (uint64, error) {
 	return nm.loadUint64(computeKey(key, lastSentSuf))
 }
 
@@ -57,18 +57,18 @@ func (nm *nonceSender) DeleteLastSent(key string) (err error) {
 	return nil
 }
 
-func (nm *nonceSender) loadUint64(key string) (value uint64, ok bool, err error) {
+func (nm *nonceSender) loadUint64(key string) (uint64, error) {
 	v, ok := nm.cache.Get(key)
 	if !ok {
-		return 0, false, nil
+		return 0, nil
 	}
 
 	rv, ok := v.(uint64)
 	if !ok {
-		return 0, false, errors.InvalidFormatError("loaded value is not uint64")
+		return 0, errors.DataCorruptedError("loaded value is not uint64")
 	}
 
-	return rv, true, nil
+	return rv, nil
 }
 
 func (nm *nonceSender) set(key string, value interface{}) {
@@ -81,11 +81,9 @@ func (nm *nonceSender) delete(key string) {
 }
 
 func (nm *nonceSender) incrUint64(key string) error {
-	v, ok, err := nm.loadUint64(key)
+	v, err := nm.loadUint64(key)
 	if err != nil {
 		return err
-	} else if !ok {
-		return errors.NotFoundError("no nonce cached for key %q", key)
 	}
 
 	// Stores incremented nonce

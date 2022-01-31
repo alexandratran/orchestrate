@@ -1,11 +1,10 @@
-package redis
+package flags
 
 import (
 	"fmt"
 	"time"
 
-	"github.com/consensys/orchestrate/pkg/toolkit/tls"
-	"github.com/consensys/orchestrate/pkg/toolkit/tls/certificate"
+	"github.com/consensys/orchestrate/src/infra/redis/redigo"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
@@ -21,8 +20,10 @@ func init() {
 	_ = viper.BindEnv(PasswordViperKey, passwordEnv)
 	viper.SetDefault(DatabaseViperKey, databaseDefault)
 	_ = viper.BindEnv(DatabaseViperKey, databaseEnv)
-	viper.SetDefault(TLSEnableViperKey, tlsEnableDefault)
-	_ = viper.BindEnv(TLSEnableViperKey, tlsEnableEnv)
+	viper.SetDefault(maxIdleViperKey, maxIdleDefault)
+	_ = viper.BindEnv(maxIdleViperKey, maxidleEnv)
+	viper.SetDefault(idleTimeoutViperKey, idleTimeoutDefault)
+	_ = viper.BindEnv(idleTimeoutViperKey, idleTimeoutEnv)
 	viper.SetDefault(TLSCertViperKey, tlsCertDefault)
 	_ = viper.BindEnv(TLSCertViperKey, tlsCertEnv)
 	viper.SetDefault(TLSKeyViperKey, tlsKeyDefault)
@@ -33,12 +34,33 @@ func init() {
 	_ = viper.BindEnv(TLSSkipVerifyViperKey, tlsSkipVerifyEnv)
 }
 
+func RedisFlags(f *pflag.FlagSet) {
+	host(f)
+	port(f)
+	username(f)
+	database(f)
+	password(f)
+	maxIdle(f)
+	idleTimeout(f)
+	tlsCert(f)
+	tlsKey(f)
+	tlsCA(f)
+	skipVerify(f)
+}
+
 const (
 	hostFlag     = "redis-host"
 	HostViperKey = "redis.host"
 	hostDefault  = "localhost"
 	hostEnv      = "REDIS_HOST"
 )
+
+func host(f *pflag.FlagSet) {
+	desc := fmt.Sprintf(`Host (address) of Redis server to connect to.
+Environment variable: %q`, hostEnv)
+	f.String(hostFlag, hostDefault, desc)
+	_ = viper.BindPFlag(HostViperKey, f.Lookup(hostFlag))
+}
 
 const (
 	portFlag     = "redis-port"
@@ -47,14 +69,8 @@ const (
 	portEnv      = "REDIS_PORT"
 )
 
-// URL register a flag for Redis server URL
-func URL(f *pflag.FlagSet) {
-	desc := fmt.Sprintf(`Host (address) of Redis server to connect to.
-Environment variable: %q`, hostEnv)
-	f.String(hostFlag, hostDefault, desc)
-	_ = viper.BindPFlag(HostViperKey, f.Lookup(hostFlag))
-
-	desc = fmt.Sprintf(`Port (address) of Redis server to connect to.
+func port(f *pflag.FlagSet) {
+	desc := fmt.Sprintf(`Port of Redis server to connect to.
 Environment variable: %q`, portEnv)
 	f.String(portFlag, portDefault, desc)
 	_ = viper.BindPFlag(PortViperKey, f.Lookup(portFlag))
@@ -67,8 +83,7 @@ const (
 	usernameEnv      = "REDIS_USER"
 )
 
-// UsernameFlag register flag for db user
-func UsernameFlag(f *pflag.FlagSet) {
+func username(f *pflag.FlagSet) {
 	desc := fmt.Sprintf(`Redis Username.
 Environment variable: %q`, usernameEnv)
 	f.String(usernameFlag, usernameDefault, desc)
@@ -82,8 +97,7 @@ const (
 	passwordEnv      = "REDIS_PASSWORD"
 )
 
-// PasswordFlag register flag for db password
-func PasswordFlag(f *pflag.FlagSet) {
+func password(f *pflag.FlagSet) {
 	desc := fmt.Sprintf(`Redis Username password
 Environment variable: %q`, passwordEnv)
 	f.String(passwordFlag, passwordDefault, desc)
@@ -97,26 +111,11 @@ const (
 	databaseEnv      = "REDIS_DATABASE"
 )
 
-// DatabaseFlag register flag for db database name
-func DatabaseFlag(f *pflag.FlagSet) {
+func database(f *pflag.FlagSet) {
 	desc := fmt.Sprintf(`Target Redis database name
 Environment variable: %q`, databaseEnv)
 	f.Int(databaseFlag, databaseDefault, desc)
 	_ = viper.BindPFlag(DatabaseViperKey, f.Lookup(databaseFlag))
-}
-
-const (
-	tlsEnableFlag     = "redis-tls-enable"
-	TLSEnableViperKey = "redis.tls.enable"
-	tlsEnableDefault  = false
-	tlsEnableEnv      = "REDIS_TLS_ENABLE"
-)
-
-func TLSEnableFlag(f *pflag.FlagSet) {
-	desc := fmt.Sprintf(`Enable TLS/SSL to connect to Redis
-Environment variable: %q`, tlsEnableEnv)
-	f.Bool(tlsEnableFlag, tlsEnableDefault, desc)
-	_ = viper.BindPFlag(TLSEnableViperKey, f.Lookup(tlsEnableFlag))
 }
 
 const (
@@ -126,8 +125,7 @@ const (
 	tlsCertEnv      = "REDIS_TLS_CERT"
 )
 
-// RedisTLSCert register flag for TLS certificate used to connect to the database
-func TLSCertFlag(f *pflag.FlagSet) {
+func tlsCert(f *pflag.FlagSet) {
 	desc := fmt.Sprintf(`TLS Certificate to connect to Redis
 Environment variable: %q`, tlsCertEnv)
 	f.String(tlsCertFlag, tlsCertDefault, desc)
@@ -141,8 +139,7 @@ const (
 	tlsKeyEnv      = "REDIS_TLS_KEY"
 )
 
-// RedisTLSKey register flag for database TLS private key
-func TLSKeyFlag(f *pflag.FlagSet) {
+func tlsKey(f *pflag.FlagSet) {
 	desc := fmt.Sprintf(`TLS Private Key to connect to Redis
 Environment variable: %q`, tlsKeyEnv)
 	f.String(tlsKeyFlag, tlsKeyDefault, desc)
@@ -156,8 +153,7 @@ const (
 	tlsCAEnv      = "REDIS_TLS_CA"
 )
 
-// RedisTLSCert register flag for database pool size
-func TLSCAFlag(f *pflag.FlagSet) {
+func tlsCA(f *pflag.FlagSet) {
 	desc := fmt.Sprintf(`Trusted Certificate Authority
 Environment variable: %q`, tlsCAEnv)
 	f.String(tlsCAFlag, tlsCADefault, desc)
@@ -171,75 +167,53 @@ const (
 	tlsSkipVerifyEnv      = "REDIS_TLS_SKIP_VERIFY"
 )
 
-// RedisTLSCert register flag for database pool size
-func SkipVerifyFlag(f *pflag.FlagSet) {
+func skipVerify(f *pflag.FlagSet) {
 	desc := fmt.Sprintf(`Skip service certificate verification
 Environment variable: %q`, tlsSkipVerifyEnv)
 	f.Bool(tlsSkipVerifyFlag, tlsSkipVerifyDefault, desc)
 	_ = viper.BindPFlag(TLSSkipVerifyViperKey, f.Lookup(tlsSkipVerifyFlag))
 }
 
-// Register Redis flags
-func Flags(f *pflag.FlagSet) {
-	URL(f)
-	UsernameFlag(f)
-	DatabaseFlag(f)
-	PasswordFlag(f)
-	TLSEnableFlag(f)
-	TLSCertFlag(f)
-	TLSKeyFlag(f)
-	TLSCAFlag(f)
-	SkipVerifyFlag(f)
+const (
+	maxIdleFlag     = "redis-max-idle"
+	maxIdleViperKey = "redis.max.idle"
+	maxIdleDefault  = 10000
+	maxidleEnv      = "REDIS_MAX_IDLE"
+)
+
+func maxIdle(f *pflag.FlagSet) {
+	desc := fmt.Sprintf(`Redis Max idle.
+Environment variable: %q`, maxidleEnv)
+	f.Int(maxIdleFlag, maxIdleDefault, desc)
+	_ = viper.BindPFlag(maxIdleViperKey, f.Lookup(maxIdleFlag))
 }
 
-type Config struct {
-	Host       string
-	Port       string
-	Expiration int
-	User       string
-	Password   string
-	Database   int
-	TLS        *tls.Option
+const (
+	idleTimeoutFlag     = "redis-idle-timeout"
+	idleTimeoutViperKey = "redis.idle-timeout"
+	idleTimeoutDefault  = 240 * time.Second
+	idleTimeoutEnv      = "REDIS_IDLE_TIMEOUT"
+)
+
+func idleTimeout(f *pflag.FlagSet) {
+	desc := fmt.Sprintf(`Redis idle timeout duration.
+Environment variable: %q`, idleTimeoutEnv)
+	f.Duration(idleTimeoutFlag, idleTimeoutDefault, desc)
+	_ = viper.BindPFlag(idleTimeoutViperKey, f.Lookup(idleTimeoutFlag))
 }
 
-func NewConfig(vipr *viper.Viper) *Config {
-	cfg := &Config{
-		Host:       vipr.GetString(HostViperKey),
-		Port:       vipr.GetString(PortViperKey),
-		User:       vipr.GetString(UsernameViperKey),
-		Password:   vipr.GetString(PasswordViperKey),
-		Database:   vipr.GetInt(DatabaseViperKey),
-		Expiration: int(2 * time.Minute),
+func NewRedisConfig(vipr *viper.Viper) *redigo.Config {
+	return &redigo.Config{
+		Host:          vipr.GetString(HostViperKey),
+		Port:          vipr.GetString(PortViperKey),
+		User:          vipr.GetString(UsernameViperKey),
+		Password:      vipr.GetString(PasswordViperKey),
+		Database:      vipr.GetInt(DatabaseViperKey),
+		MaxIdle:       vipr.GetInt(maxIdleViperKey),
+		IdleTimeout:   vipr.GetDuration(idleTimeoutViperKey),
+		TLSCert:       vipr.GetString(TLSCertViperKey),
+		TLSKey:        vipr.GetString(TLSKeyViperKey),
+		TLSCA:         vipr.GetString(TLSCAViperKey),
+		TLSSkipVerify: vipr.GetBool(TLSSkipVerifyViperKey),
 	}
-
-	if vipr.GetBool(TLSEnableViperKey) {
-		cfg.TLS = &tls.Option{
-			ServerName: cfg.Host,
-		}
-
-		if vipr.GetString(TLSCertViperKey) != "" {
-			cfg.TLS.Certificates = []*certificate.KeyPair{
-				{
-					Cert: []byte(vipr.GetString(TLSCertViperKey)),
-					Key:  []byte(vipr.GetString(TLSKeyViperKey)),
-				},
-			}
-		}
-
-		if vipr.GetString(TLSCAViperKey) != "" {
-			cfg.TLS.CAs = [][]byte{
-				[]byte(vipr.GetString(TLSCAViperKey)),
-			}
-		}
-
-		if vipr.GetBool(TLSSkipVerifyViperKey) {
-			cfg.TLS.InsecureSkipVerify = true
-		}
-	}
-
-	return cfg
-}
-
-func (c *Config) URL() string {
-	return fmt.Sprintf("%v:%v", c.Host, c.Port)
 }

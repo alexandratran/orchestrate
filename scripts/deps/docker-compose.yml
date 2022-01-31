@@ -41,7 +41,7 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
     healthcheck:
-      test: ["CMD", "kafka-topics", "--list", "--bootstrap-server", "kafka:9092"]
+      test: [ "CMD", "kafka-topics", "--list", "--bootstrap-server", "kafka:9092" ]
       interval: 3s
       timeout: 3s
       retries: 10
@@ -58,22 +58,18 @@ services:
 
   #  redis:
   #    <<: *container-common
-  #    build: ./redis
+  #    image: madflojo/redis-tls
   #    user: root
   #    ports:
-  #      - 6379:6379
-  #      - 6378:6378
+  #      - "6379:6379"
   #    volumes:
-  #      - ./redis/config/stunnel.conf:/etc/stunnel/stunnel.conf
-  #      - ./redis/config/redis-auth.conf:/etc/redis/redis.conf
-  #      - ./redis/init.sh:/init.sh
-  #    command: sh /init.sh
+  #      - ./redis/certs:/certs
 
   postgres-unit:
     <<: *container-common
     <<: *postgres-common
     image: postgres:13.4-alpine
-    command: ["postgres", "-c", "log_statement=all", "-c", "log_destination=stderr", "-c", "log_connections=1", "-c", "log_disconnections=1"]
+    command: [ "postgres", "-c", "log_statement=all", "-c", "log_destination=stderr", "-c", "log_connections=1", "-c", "log_disconnections=1" ]
     ports:
       - 5432:5432
     volumes:
@@ -83,7 +79,7 @@ services:
     <<: *container-common
     <<: *postgres-common
     image: postgres:13.4-alpine
-    command: ["postgres", "-c", "log_statement=all"]
+    command: [ "postgres", "-c", "log_statement=all" ]
     volumes:
       - db-data-api:/var/lib/postgresql/data
     ports:
@@ -185,8 +181,8 @@ services:
       HTTPS_SERVER_KEY: /certificates/https.key
       HTTPS_SERVER_CERT: /certificates/https.crt
       AUTH_OIDC_CA_CERT: /certificates/client.crt
-#      AUTH_OIDC_ISSUER_URL:
-#      AUTH_TLS_CA: /ca/ca.crt
+      #      AUTH_OIDC_ISSUER_URL:
+      #      AUTH_TLS_CA: /ca/ca.crt
       AUTH_API_KEY_FILE: /apikey/orchestrate_api_keys.csv
     command: run
     healthcheck:

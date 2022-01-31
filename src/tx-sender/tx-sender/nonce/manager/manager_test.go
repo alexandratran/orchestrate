@@ -1,15 +1,15 @@
 // +build unit
 
-package nonce
+package manager
 
 import (
 	"context"
 	"testing"
 
 	"github.com/consensys/orchestrate/pkg/errors"
-	mock2 "github.com/consensys/orchestrate/src/infra/ethclient/mock"
-	"github.com/consensys/orchestrate/src/entities/testdata"
 	"github.com/consensys/orchestrate/pkg/utils"
+	"github.com/consensys/orchestrate/src/entities/testdata"
+	mock2 "github.com/consensys/orchestrate/src/infra/ethclient/mock"
 	"github.com/consensys/orchestrate/src/tx-sender/store/mock"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -27,12 +27,12 @@ func TestNonceManager(t *testing.T) {
 
 	manager := NewNonceManager(ec, ns, rt, chainRegistryURL, maxRecovery)
 
-	t.Run("should fetch nonce from chain successfully", func(t *testing.T) {
+	t.Run("should fetch nonce from chain successfully if no nonce is set", func(t *testing.T) {
 		ctx := context.Background()
 		job := testdata.FakeJob()
 		expectedNonce := uint64(1)
 
-		ns.EXPECT().GetLastSent(partitionKey(job)).Return(uint64(0), false, nil)
+		ns.EXPECT().GetLastSent(partitionKey(job)).Return(uint64(0), errors.NotFoundError("error"))
 
 		url := utils.GetProxyURL(chainRegistryURL, job.ChainUUID)
 		ec.EXPECT().PendingNonceAt(ctx, url, *job.Transaction.From).Return(expectedNonce, nil)
@@ -47,7 +47,7 @@ func TestNonceManager(t *testing.T) {
 		job := testdata.FakeJob()
 		expectedNonce := uint64(2)
 
-		ns.EXPECT().GetLastSent(partitionKey(job)).Return(expectedNonce-1, true, nil)
+		ns.EXPECT().GetLastSent(partitionKey(job)).Return(expectedNonce-1, nil)
 
 		nonce, err := manager.GetNonce(ctx, job)
 		assert.NoError(t, err)
@@ -59,7 +59,7 @@ func TestNonceManager(t *testing.T) {
 		job := testdata.FakeJob()
 
 		expectedErr := errors.InvalidNonceWarning("invalid error")
-		ns.EXPECT().GetLastSent(partitionKey(job)).Return(uint64(0), false, expectedErr)
+		ns.EXPECT().GetLastSent(partitionKey(job)).Return(uint64(0), expectedErr)
 
 		_, err := manager.GetNonce(ctx, job)
 		assert.Equal(t, err, expectedErr)
@@ -71,7 +71,7 @@ func TestNonceManager(t *testing.T) {
 		expectedNonce := uint64(1)
 		job.Transaction.Nonce = utils.ToPtr(expectedNonce).(*uint64)
 
-		ns.EXPECT().GetLastSent(partitionKey(job)).Return(uint64(0), false, nil)
+		ns.EXPECT().GetLastSent(partitionKey(job)).Return(uint64(0), nil)
 		ns.EXPECT().SetLastSent(partitionKey(job), expectedNonce).Return(nil)
 		rt.EXPECT().Recovered(job.UUID)
 
@@ -85,7 +85,7 @@ func TestNonceManager(t *testing.T) {
 		expectedNonce := uint64(1)
 		job.Transaction.Nonce = utils.ToPtr(expectedNonce).(*uint64)
 
-		ns.EXPECT().GetLastSent(partitionKey(job)).Return(uint64(0), true, nil)
+		ns.EXPECT().GetLastSent(partitionKey(job)).Return(uint64(0), nil)
 		ns.EXPECT().SetLastSent(partitionKey(job), expectedNonce).Return(nil)
 		rt.EXPECT().Recovered(job.UUID)
 
@@ -99,7 +99,7 @@ func TestNonceManager(t *testing.T) {
 		expectedNonce := uint64(2)
 		job.Transaction.Nonce = utils.ToPtr(expectedNonce).(*uint64)
 
-		ns.EXPECT().GetLastSent(partitionKey(job)).Return(uint64(0), true, nil)
+		ns.EXPECT().GetLastSent(partitionKey(job)).Return(uint64(0), nil)
 		rt.EXPECT().Recovered(job.UUID)
 
 		err := manager.IncrementNonce(ctx, job)
@@ -113,7 +113,7 @@ func TestNonceManager(t *testing.T) {
 		job.Transaction.Nonce = utils.ToPtr(expectedNonce + 1).(*uint64)
 
 		jobErr := errors.InvalidNonceWarning("nonce too low")
-		ns.EXPECT().GetLastSent(partitionKey(job)).Return(uint64(1), true, nil)
+		ns.EXPECT().GetLastSent(partitionKey(job)).Return(uint64(1), nil)
 		ns.EXPECT().DeleteLastSent(partitionKey(job)).Return(nil)
 		rt.EXPECT().Recovering(job.UUID).Return(uint64(0))
 		rt.EXPECT().Recover(job.UUID)
@@ -130,7 +130,7 @@ func TestNonceManager(t *testing.T) {
 		job.Transaction.Nonce = utils.ToPtr(expectedNonce).(*uint64)
 
 		jobErr := errors.InvalidNonceWarning("nonce too low")
-		ns.EXPECT().GetLastSent(partitionKey(job)).Return(expectedNonce, true, nil)
+		ns.EXPECT().GetLastSent(partitionKey(job)).Return(expectedNonce, nil)
 		rt.EXPECT().Recovering(job.UUID).Return(uint64(0))
 		rt.EXPECT().Recover(job.UUID)
 

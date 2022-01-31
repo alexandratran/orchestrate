@@ -7,6 +7,13 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	pkgjson "github.com/consensys/orchestrate/pkg/encoding/json"
+	"github.com/consensys/orchestrate/pkg/errors"
+	"github.com/consensys/orchestrate/pkg/toolkit/app/http"
+	"github.com/consensys/orchestrate/pkg/toolkit/app/http/httputil"
+	"github.com/consensys/orchestrate/src/entities/testdata"
+	"github.com/consensys/orchestrate/src/infra/ethclient/rpc"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"io/ioutil"
 	"math/big"
 	http2 "net/http"
@@ -15,23 +22,17 @@ import (
 	"time"
 
 	"github.com/Shopify/sarama"
-	pkgjson "github.com/consensys/orchestrate/pkg/encoding/json"
 	encoding "github.com/consensys/orchestrate/pkg/encoding/proto"
-	quorumkeymanager "github.com/consensys/orchestrate/src/infra/quorum-key-manager"
 	utils3 "github.com/consensys/orchestrate/pkg/toolkit/app/auth/utils"
-	"github.com/consensys/orchestrate/pkg/toolkit/app/http"
-	"github.com/consensys/orchestrate/pkg/toolkit/app/http/httputil"
 	"github.com/consensys/orchestrate/pkg/toolkit/app/multitenancy"
-	"github.com/consensys/orchestrate/src/infra/ethclient/rpc"
-	utils2 "github.com/consensys/orchestrate/src/infra/ethclient/utils"
-	api "github.com/consensys/orchestrate/src/api/service/types"
-	"github.com/consensys/orchestrate/src/entities"
-	"github.com/consensys/orchestrate/src/entities/testdata"
 	"github.com/consensys/orchestrate/pkg/types/tx"
 	"github.com/consensys/orchestrate/pkg/utils"
+	api "github.com/consensys/orchestrate/src/api/service/types"
+	"github.com/consensys/orchestrate/src/entities"
+	utils2 "github.com/consensys/orchestrate/src/infra/ethclient/utils"
+	quorumkeymanager "github.com/consensys/orchestrate/src/infra/quorum-key-manager"
 	"github.com/consensys/quorum-key-manager/src/stores/api/types"
 	ethcommon "github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/gofrs/uuid"
 	"github.com/hashicorp/go-multierror"
 	"github.com/stretchr/testify/assert"
@@ -50,7 +51,7 @@ type txSenderEthereumTestSuite struct {
 	env *IntegrationEnvironment
 }
 
-func (s *txSenderEthereumTestSuite) TestTxSender_Ethereum_Public() {
+func (s *txSenderEthereumTestSuite) TestPublic() {
 	signedRawTx := "0xf85380839896808252088083989680808216b4a0d35c752d3498e6f5ca1630d264802a992a141ca4b6a3f439d673c75e944e5fb0a05278aaa5fabbeac362c321b54e298dedae2d31471e432c26ea36a8d49cf08f1e"
 	txHash := "0x6621fbe1e2848446e38d99bfda159cdd83f555ae0ed7a4f3e1c3c79f7d6d74f3"
 
@@ -95,6 +96,11 @@ func (s *txSenderEthereumTestSuite) TestTxSender_Ethereum_Public() {
 		wg := &multierror.Group{}
 
 		envelope := fakeEnvelope()
+		envelope.GasPrice = nil
+		envelope.Gas = nil
+		envelope.Nonce = nil
+		envelope = envelope.SetPriority(utils.PriorityVeryHigh)
+
 		gock.New(keyManagerURL).
 			Get(fmt.Sprintf("/stores/%s/ethereum/%s", qkmStoreName, envelope.GetFromString())).
 			Reply(http2.StatusOK).JSON(&types.EthAccountResponse{
@@ -135,10 +141,6 @@ func (s *txSenderEthereumTestSuite) TestTxSender_Ethereum_Public() {
 			AddMatcher(txStatusUpdateMatcher(wg, entities.StatusPending, "", "", "2500100000")).
 			Reply(http2.StatusOK).JSON(&api.JobResponse{})
 
-		envelope.GasPrice = nil
-		envelope.Gas = nil
-		envelope.Nonce = nil
-		envelope = envelope.SetPriority(utils.PriorityVeryHigh)
 		err := s.sendEnvelope(envelope.TxEnvelopeAsRequest())
 		if err != nil {
 			assert.Fail(t, err.Error())
@@ -154,6 +156,11 @@ func (s *txSenderEthereumTestSuite) TestTxSender_Ethereum_Public() {
 		wg := &multierror.Group{}
 
 		envelope := fakeEnvelope()
+		envelope.GasPrice = nil
+		envelope.Gas = nil
+		envelope.Nonce = nil
+		envelope.TransactionType = string(entities.LegacyTxType)
+		envelope = envelope.SetPriority(utils.PriorityVeryLow)
 
 		gock.New(keyManagerURL).
 			Get(fmt.Sprintf("/stores/%s/ethereum/%s", qkmStoreName, envelope.GetFromString())).
@@ -203,11 +210,6 @@ func (s *txSenderEthereumTestSuite) TestTxSender_Ethereum_Public() {
 			AddMatcher(ethCallMatcher(wg, "eth_sendRawTransaction", signedRawTx)).
 			Reply(http2.StatusOK).BodyString("{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":\"" + txHash + "\"}")
 
-		envelope.GasPrice = nil
-		envelope.Gas = nil
-		envelope.Nonce = nil
-		envelope.TransactionType = string(entities.LegacyTxType)
-		envelope = envelope.SetPriority(utils.PriorityVeryLow)
 		err := s.sendEnvelope(envelope.TxEnvelopeAsRequest())
 		if err != nil {
 			assert.Fail(t, err.Error())
@@ -455,7 +457,7 @@ func (s *txSenderEthereumTestSuite) TestTxSender_Ethereum_Public() {
 	})
 }
 
-func (s *txSenderEthereumTestSuite) TestTxSender_Ethereum_Raw_Public() {
+func (s *txSenderEthereumTestSuite) TestRawPublic() {
 	raw := "0xf85380839896808252088083989680808216b4a0d35c752d3498e6f5ca1630d264802a992a141ca4b6a3f439d673c75e944e5fb0a05278aaa5fabbeac362c321b54e298dedae2d31471e432c26ea36a8d49cf08f1e"
 	txHash := "0x6621fbe1e2848446e38d99bfda159cdd83f555ae0ed7a4f3e1c3c79f7d6d74f3"
 
@@ -573,7 +575,7 @@ func (s *txSenderEthereumTestSuite) TestTxSender_Ethereum_Raw_Public() {
 	})
 }
 
-func (s *txSenderEthereumTestSuite) TestTxSender_Ethereum_EEA() {
+func (s *txSenderEthereumTestSuite) TestEEA() {
 	txHash := "0x6621fbe1e2848446e38d99bfda159cdd83f555ae0ed7a4f3e1c3c79f7d6d74f3"
 	signedRawTx := "0xf8be8080808083989680808216b4a0d35c752d3498e6f5ca1630d264802a992a141ca4b6a3f439d673c75e944e5fb0a05278aaa5fabbeac362c321b54e298dedae2d31471e432c26ea36a8d49cf08f1ea0035695b4cc4b0941e60551d7a19cf30603db5bfc23e5ac43a56f57f25f75486af842a0035695b4cc4b0941e60551d7a19cf30603db5bfc23e5ac43a56f57f25f75486aa0075695b4cc4b0941e60551d7a19cf30603db5bfc23e5ac43a56f57f25f75486a8a72657374726963746564"
 
@@ -695,7 +697,7 @@ func (s *txSenderEthereumTestSuite) TestTxSender_Ethereum_EEA() {
 	})
 }
 
-func (s *txSenderEthereumTestSuite) TestTxSender_Tessera_Marking() {
+func (s *txSenderEthereumTestSuite) TestTesseraMarking() {
 	signedTxRaw := "0xf851808398968082520880839896808026a0d35c752d3498e6f5ca1630d264802a992a141ca4b6a3f439d673c75e944e5fb0a05278aaa5fabbeac362c321b54e298dedae2d31471e432c26ea36a8d49cf08f1e"
 	txHash := "0x226d79b217b5ebfeddd08662f3ae1bb1b2cb339d50bbcb708b53ad5f4c71c5ea"
 
@@ -905,7 +907,7 @@ func (s *txSenderEthereumTestSuite) TestTxSender_Tessera_Marking() {
 	})
 }
 
-func (s *txSenderEthereumTestSuite) TestTxSender_Tessera_Private() {
+func (s *txSenderEthereumTestSuite) TestTesseraPrivate() {
 	data := utils.StringToHexBytes("0xf8c380839896808252088083989680808216b4a0d35c752d3498e6f5ca1630d264802a992a141ca4b6a3f439d673c75e944e5fb0a05278aaa5fabbeac362c321b54e298dedae2d31471e432c26ea36a8d49cf08f1ea0035695b4cc4b0941e60551d7a19cf30603db5bfc23e5ac43a56f57f25f75486af842a0035695b4cc4b0941e60551d7a19cf30603db5bfc23e5ac43a56f57f25f75486aa0075695b4cc4b0941e60551d7a19cf30603db5bfc23e5ac43a56f57f25f75486a8a72657374726963746564")
 	enclaveKey := hexutil.MustDecode("0x226d79b217b5ebfeddd08662f3ae1bb1b2cb339d50bbcb708b53ad5f4c71c5ea")
 
@@ -979,7 +981,7 @@ func (s *txSenderEthereumTestSuite) TestTxSender_Tessera_Private() {
 	})
 }
 
-func (s *txSenderEthereumTestSuite) TestTxSender_XNonceManager() {
+func (s *txSenderEthereumTestSuite) TestXNonceManager() {
 	signedRawTx := "0xf85380839896808252088083989680808216b4a0d35c752d3498e6f5ca1630d264802a992a141ca4b6a3f439d673c75e944e5fb0a05278aaa5fabbeac362c321b54e298dedae2d31471e432c26ea36a8d49cf08f1e"
 	txHash := "0x6621fbe1e2848446e38d99bfda159cdd83f555ae0ed7a4f3e1c3c79f7d6d74f3"
 	txHash2 := "0x6621fbe1e2848446e38d99bfda159cdd83f555ae0ed7a4f3e1c3c79f7d6d74f4"
@@ -1048,7 +1050,8 @@ func (s *txSenderEthereumTestSuite) TestTxSender_XNonceManager() {
 			gock.Off()
 		}
 
-		nonce, _, _ := s.env.ns.GetLastSent(envelope.PartitionKey())
+		nonce, err := s.env.ns.GetLastSent(envelope.PartitionKey())
+		require.NoError(t, err)
 		assert.Equal(t, uint64(2), nonce)
 	})
 
@@ -1178,7 +1181,8 @@ func (s *txSenderEthereumTestSuite) TestTxSender_XNonceManager() {
 			gock.Off()
 		}
 
-		nonce, _, _ := s.env.ns.GetLastSent(envelope.PartitionKey())
+		nonce, err := s.env.ns.GetLastSent(envelope.PartitionKey())
+		require.NoError(t, err)
 		assert.Equal(t, uint64(3), nonce)
 	})
 
@@ -1245,12 +1249,12 @@ func (s *txSenderEthereumTestSuite) TestTxSender_XNonceManager() {
 			gock.Off()
 		}
 
-		_, ok, _ := s.env.ns.GetLastSent(envelope.PartitionKey())
-		assert.False(t, ok)
+		_, err := s.env.ns.GetLastSent(envelope.PartitionKey())
+		require.True(t, errors.IsNotFoundError(err))
 	})
 }
 
-func (s *txSenderEthereumTestSuite) TestTxSender_ZHealthCheck() {
+func (s *txSenderEthereumTestSuite) TestZHealthCheck() {
 	type healthRes struct {
 		API   string `json:"api,omitempty"`
 		Kafka string `json:"kafka,omitempty"`

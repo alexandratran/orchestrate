@@ -27,9 +27,13 @@ type sendEEAPrivateTxUseCase struct {
 	logger           *log.Logger
 }
 
-func NewSendEEAPrivateTxUseCase(signTx usecases.SignEEATransactionUseCase, crafter usecases.CraftTransactionUseCase,
-	ec ethclient.EEATransactionSender, jobClient client.JobClient, chainRegistryURL string,
-	nonceManager nonce.Manager) usecases.SendEEAPrivateTxUseCase {
+func NewSendEEAPrivateTxUseCase(signTx usecases.SignEEATransactionUseCase,
+	crafter usecases.CraftTransactionUseCase,
+	ec ethclient.EEATransactionSender,
+	jobClient client.JobClient,
+	chainRegistryURL string,
+	nonceManager nonce.Manager,
+) usecases.SendEEAPrivateTxUseCase {
 	return &sendEEAPrivateTxUseCase{
 		jobClient:        jobClient,
 		chainRegistryURL: chainRegistryURL,
